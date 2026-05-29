@@ -323,11 +323,11 @@ function App(){
         <p style={{fontSize:10,letterSpacing:3,color:"#d97706",textTransform:"uppercase",fontWeight:800,marginBottom:8}}>🚦 Traffic Signs ({ALL_SIGNS.length} questions)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}}>
           {SETS.filter(s=>s.cat==="Signs").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#fef3c7",border:"2px solid #fde68a",borderRadius:14,padding:"12px 10px",cursor:"pointer",textAlign:"left",transition:"all 0.18s",boxShadow:"0 2px 8px rgba(0,0,0,0.05)"}}
-              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 20px rgba(245,158,11,0.18)";}}
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:14,padding:"12px 10px",cursor:"pointer",textAlign:"left",transition:"all 0.18s",boxShadow:"0 2px 8px rgba(0,0,0,0.05)"}}
+              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 20px rgba(245,158,11,0.5)";}}
               onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.05)";}}>
-              <div style={{fontWeight:800,fontSize:12,color:"#92400e"}}>{set.label}</div>
-              <div style={{fontSize:10,color:"#78350f",marginTop:3,fontWeight:700}}>{set.count} questions</div>
+              <div style={{fontWeight:800,fontSize:12,color:"#fff"}}>{set.label}</div>
+              <div style={{fontSize:10,color:"#fef3c7",marginTop:3,fontWeight:700}}>{set.count} Qs</div>
             </button>
           ))}
         </div>
@@ -335,7 +335,7 @@ function App(){
         <p style={{fontSize:10,letterSpacing:3,color:"#059669",textTransform:"uppercase",fontWeight:800,marginBottom:8}}>📋 Driving Rules ({ALL_RULES.length} questions)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:16}}>
           {SETS.filter(s=>s.cat==="Rules").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#065f46",border:"2px solid #047857",borderRadius:14,padding:"12px 10px",cursor:"pointer",textAlign:"left",transition:"all 0.18s",boxShadow:"0 2px 8px rgba(0,0,0,0.05)"}}
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#059669",border:"2px solid #047857",borderRadius:14,padding:"12px 10px",cursor:"pointer",textAlign:"left",transition:"all 0.18s",boxShadow:"0 2px 8px rgba(0,0,0,0.05)"}}
               onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 8px 20px rgba(5,150,105,0.4)";}}
               onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 2px 8px rgba(0,0,0,0.05)";}}>
               <div style={{fontWeight:800,fontSize:12,color:"#fff"}}>{set.label}</div>
@@ -348,7 +348,7 @@ function App(){
           <p style={{margin:0,color:"#78350f",fontSize:11,lineHeight:1.6}}>💡 <strong>Real G1 Test:</strong> 40 questions — 20 signs + 20 rules. Max 4 wrong per section. Pass = <strong>80%</strong>.</p>
         </div>
         <div style={{textAlign:"center"}}>
-          <a href="https://davidsacademy.ca" target="_blank" rel="noopener noreferrer" style={{display:"inline-flex",alignItems:"center",gap:8,background:"#CC0000",color:"#fff",fontSize:14,textDecoration:"none",fontWeight:800,padding:"12px 28px",borderRadius:12,boxShadow:"0 4px 16px rgba(204,0,0,0.3)"}}>🏠 Home</a>
+          <a href="https://davidsacademy.ca" style={{display:"inline-flex",alignItems:"center",gap:8,background:"#CC0000",color:"#fff",fontSize:14,textDecoration:"none",fontWeight:800,padding:"12px 28px",borderRadius:12,boxShadow:"0 4px 16px rgba(204,0,0,0.3)"}}>🏠 Home</a>
         </div>
       </div>
     </div>
@@ -469,7 +469,7 @@ function App(){
           })}
         </div>
         <div style={{display:"flex",gap:10,marginBottom:16}}>
-          <a href="https://davidsacademy.ca" target="_blank" rel="noopener noreferrer" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:"#CC0000",color:"#fff",fontSize:13,textDecoration:"none",fontWeight:800,padding:"13px",borderRadius:11,boxShadow:"0 4px 16px rgba(204,0,0,0.3)"}}>🏠 Home</a>
+          <a href="https://davidsacademy.ca" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:"#CC0000",color:"#fff",fontSize:13,textDecoration:"none",fontWeight:800,padding:"13px",borderRadius:11,boxShadow:"0 4px 16px rgba(204,0,0,0.3)"}}>🏠 Home</a>
           <button onClick={()=>startAll()} style={{flex:2,background:"linear-gradient(135deg,#f59e0b,#f97316)",border:"none",borderRadius:11,padding:"13px",fontSize:13,fontWeight:800,color:"#fff",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(245,158,11,0.3)"}}>Try Again 🔄</button>
         </div>
       </div>
