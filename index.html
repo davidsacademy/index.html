@@ -348,7 +348,7 @@ function App(){
           <p style={{margin:0,color:"#78350f",fontSize:11,lineHeight:1.6}}>💡 <strong>Real G1 Test:</strong> 40 questions — 20 signs + 20 rules. Max 4 wrong per section. Pass = <strong>80%</strong>.</p>
         </div>
         <div style={{textAlign:"center"}}>
-          <a href="https://davidsacademy.ca" style={{display:"inline-flex",alignItems:"center",gap:8,background:"#CC0000",color:"#fff",fontSize:14,textDecoration:"none",fontWeight:800,padding:"12px 28px",borderRadius:12,boxShadow:"0 4px 16px rgba(204,0,0,0.3)"}}>🏠 Home</a>
+          <button onClick={()=>window.top.location.href="https://davidsacademy.ca"} style={{display:"inline-flex",alignItems:"center",gap:8,background:"#CC0000",color:"#fff",fontSize:14,border:"none",fontWeight:800,padding:"12px 28px",borderRadius:12,boxShadow:"0 4px 16px rgba(204,0,0,0.3)",cursor:"pointer",fontFamily:"inherit"}}>🏠 Home</button>
         </div>
       </div>
     </div>
@@ -469,7 +469,7 @@ function App(){
           })}
         </div>
         <div style={{display:"flex",gap:10,marginBottom:16}}>
-          <a href="https://davidsacademy.ca" style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:"#CC0000",color:"#fff",fontSize:13,textDecoration:"none",fontWeight:800,padding:"13px",borderRadius:11,boxShadow:"0 4px 16px rgba(204,0,0,0.3)"}}>🏠 Home</a>
+          <button onClick={()=>window.top.location.href="https://davidsacademy.ca"} style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:6,background:"#CC0000",color:"#fff",fontSize:13,border:"none",fontWeight:800,padding:"13px",borderRadius:11,boxShadow:"0 4px 16px rgba(204,0,0,0.3)",cursor:"pointer",fontFamily:"inherit"}}>🏠 Home</button>
           <button onClick={()=>startAll()} style={{flex:2,background:"linear-gradient(135deg,#f59e0b,#f97316)",border:"none",borderRadius:11,padding:"13px",fontSize:13,fontWeight:800,color:"#fff",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 4px 16px rgba(245,158,11,0.3)"}}>Try Again 🔄</button>
         </div>
       </div>
