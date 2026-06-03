@@ -370,7 +370,7 @@ function App(){
           </div>
           <span style={{background:CB[q.cat]||"#f1f5f9",color:CC[q.cat]||"#334155",border:`1.5px solid ${(CC[q.cat]||"#94a3b8")+"55"}`,borderRadius:100,padding:"4px 12px",fontSize:11,fontWeight:700,...urduFont}}>{CI[q.cat]||"📚"} {q.cat}</span>
           <div style={{background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:12,padding:"9px 12px",marginTop:6,marginBottom:8,boxShadow:"0 2px 6px rgba(0,0,0,0.06)",direction:"rtl"}}>
-            <p style={{fontSize:14,fontWeight:700,margin:0,lineHeight:2,color:"#0f172a",...urduFont}}>{q.q}</p>
+            <p style={{fontSize:17,fontWeight:800,margin:0,lineHeight:2.2,color:"#000",...urduFont}}>{q.q}</p>
           </div>
           <div style={{display:"flex",gap:8,alignItems:"flex-start",direction:"rtl"}}>
             {sv&&(
@@ -385,11 +385,11 @@ function App(){
                   if(i===q.ans){bg="#f0fdf4";border="2px solid #22c55e";color="#14532d";bBg="#22c55e";bC="#fff";}
                   else if(i===sel&&i!==q.ans){bg="#fff1f2";border="2px solid #f43f5e";color="#881337";bBg="#f43f5e";bC="#fff";}
                 }
-                const letters=["الف","ب","ج","د"];
+                const letters=["A","B","C","D"];
                 return(
-                  <button key={i} onClick={()=>pick(i)} disabled={sel!==null} style={{background:bg,border,color,borderRadius:9,padding:"8px 9px",cursor:sel!==null?"default":"pointer",textAlign:"right",fontSize:13,fontFamily:"'Noto Nastaliq Urdu',sans-serif",fontWeight:600,direction:"rtl",transition:"all 0.18s",display:"flex",gap:7,alignItems:"center",width:"100%",lineHeight:1.8}}>
-                    <div style={{flex:1,...urduFont}}>{opt}</div>
-                    <span style={{width:26,height:26,minWidth:26,borderRadius:"50%",background:bBg,color:bC,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,flexShrink:0,...urduFont}}>
+                  <button key={i} onClick={()=>pick(i)} disabled={sel!==null} style={{background:bg,border,color,borderRadius:9,padding:"10px 12px",cursor:sel!==null?"default":"pointer",textAlign:"right",fontSize:16,fontFamily:"'Noto Nastaliq Urdu',sans-serif",fontWeight:700,direction:"rtl",transition:"all 0.18s",display:"flex",gap:10,alignItems:"center",width:"100%",lineHeight:2}}>
+                    <div style={{flex:1,...urduFont,color:sel!==null?color:"#000"}}>{opt}</div>
+                    <span style={{width:30,height:30,minWidth:30,borderRadius:"50%",background:bBg,color:bC,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:900,flexShrink:0,fontFamily:"sans-serif"}}>
                       {sel!==null&&i===q.ans?"✓":sel!==null&&i===sel&&i!==q.ans?"✗":letters[i]}
                     </span>
                   </button>
@@ -399,13 +399,13 @@ function App(){
           </div>
           {sel!==null&&(
             <div style={{background:sel===q.ans?"#f0fdf4":"#fff1f2",border:`1.5px solid ${sel===q.ans?"#86efac":"#fda4af"}`,borderRadius:9,marginTop:6,padding:"8px 12px",direction:"rtl"}}>
-              <p style={{margin:0,fontSize:13,lineHeight:2,color:sel===q.ans?"#14532d":"#881337",...urduFont}}>
+              <p style={{margin:0,fontSize:15,lineHeight:2.2,color:sel===q.ans?"#14532d":"#7f1d1d",...urduFont}}>
                 {sel===q.ans?"✅ درست! ":"❌ غلط۔ "}
-                <span style={{color:"#1e293b",fontWeight:500}}>{q.exp}</span>
+                <span style={{color:"#111827",fontWeight:600}}>{q.exp}</span>
               </p>
             </div>
           )}
-          <button onClick={next} disabled={sel===null} style={{marginTop:12,width:"100%",background:sel===null?"#e2e8f0":"linear-gradient(135deg,#f59e0b,#f97316)",border:"none",borderRadius:11,padding:"14px",fontSize:14,fontWeight:800,color:sel===null?"#94a3b8":"#fff",cursor:sel===null?"default":"pointer",boxShadow:sel===null?"none":"0 4px 16px rgba(245,158,11,0.35)",transition:"all 0.2s",...urduFont}}>
+          <button onClick={next} disabled={sel===null} style={{marginTop:12,width:"100%",background:sel===null?"#e2e8f0":"linear-gradient(135deg,#f59e0b,#f97316)",border:"none",borderRadius:11,padding:"16px",fontSize:17,fontWeight:800,color:sel===null?"#94a3b8":"#fff",cursor:sel===null?"default":"pointer",boxShadow:sel===null?"none":"0 4px 16px rgba(245,158,11,0.35)",transition:"all 0.2s",...urduFont}}>
             {cur+1>=qs.length?"نتائج دیکھیں ←":"اگلا سوال ←"}
           </button>
         </div>
