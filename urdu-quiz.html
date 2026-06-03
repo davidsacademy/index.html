@@ -323,20 +323,20 @@ function App(){
         <p style={{fontSize:13,letterSpacing:0,color:"#d97706",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>🚦 ٹریفک نشانات ({ALL_SIGNS.length} سوالات)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
           {SETS.filter(s=>s.cat==="نشانات").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:10,padding:"8px 8px",cursor:"pointer",textAlign:"right",direction:"rtl"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#fff",...urduFont}}>{set.label}</div>
-              <div style={{fontSize:11,color:"#fef3c7",marginTop:2,fontWeight:700,...urduFont}}>{set.count} سوال</div>
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:10,padding:"12px 10px",cursor:"pointer",textAlign:"right",direction:"rtl"}}>
+              <div style={{fontWeight:800,fontSize:15,color:"#000",...urduFont}}>{set.label}</div>
+              
             </button>
           ))}
         </div>
 
         {/* Rules section */}
-        <p style={{fontSize:13,letterSpacing:0,color:"#059669",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>📋 ڈرائیونگ قوانین ({ALL_RULES.length} سوالات)</p>
+        <p style={{fontSize:13,letterSpacing:0,color:"#0284c7",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>📋 ڈرائیونگ قوانین ({ALL_RULES.length} سوالات)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
           {SETS.filter(s=>s.cat==="قوانین").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#059669",border:"2px solid #047857",borderRadius:10,padding:"8px 8px",cursor:"pointer",textAlign:"right",direction:"rtl"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#fff",...urduFont}}>{set.label}</div>
-              <div style={{fontSize:11,color:"#6ee7b7",marginTop:2,fontWeight:700,...urduFont}}>{set.count} سوال</div>
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#0ea5e9",border:"2px solid #0284c7",borderRadius:10,padding:"12px 10px",cursor:"pointer",textAlign:"right",direction:"rtl"}}>
+              <div style={{fontWeight:800,fontSize:15,color:"#000",...urduFont}}>{set.label}</div>
+              
             </button>
           ))}
         </div>
