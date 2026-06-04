@@ -236,12 +236,12 @@ const ALL_RULES = [
 ];
 
 const SETS = [
-  {label:"نشانات ۱ تا ۲۰", key:"s1", cat:"نشانات", pool:ALL_SIGNS.slice(0,20), count:20},
-  {label:"نشانات ۲۱ تا ۴۰", key:"s2", cat:"نشانات", pool:ALL_SIGNS.slice(20,40), count:20},
-  {label:"نشانات ۴۱ تا ۵۴", key:"s3", cat:"نشانات", pool:ALL_SIGNS.slice(40,54), count:14},
-  {label:"قوانین ۱ تا ۲۵",  key:"r1", cat:"قوانین", pool:ALL_RULES.slice(0,25), count:25},
-  {label:"قوانین ۲۶ تا ۵۵", key:"r2", cat:"قوانین", pool:ALL_RULES.slice(25,55), count:30},
-  {label:"قوانین ۵۶ تا ۹۸", key:"r3", cat:"قوانین", pool:ALL_RULES.slice(55,98), count:43},
+  {label:"نشانات", range:"1 - 20", key:"s1", cat:"نشانات", pool:ALL_SIGNS.slice(0,20), count:20},
+  {label:"نشانات", range:"21 - 40", key:"s2", cat:"نشانات", pool:ALL_SIGNS.slice(20,40), count:20},
+  {label:"نشانات", range:"41 - 54", key:"s3", cat:"نشانات", pool:ALL_SIGNS.slice(40,54), count:14},
+  {label:"قوانین", range:"1 - 25",  key:"r1", cat:"قوانین", pool:ALL_RULES.slice(0,25), count:25},
+  {label:"قوانین", range:"26 - 55", key:"r2", cat:"قوانین", pool:ALL_RULES.slice(25,55), count:30},
+  {label:"قوانین", range:"56 - 98", key:"r3", cat:"قوانین", pool:ALL_RULES.slice(55,98), count:43},
 ];
 
 const CC={"نشانات":"#d97706","قوانین":"#059669"};
@@ -323,8 +323,8 @@ function App(){
         <p style={{fontSize:13,letterSpacing:0,color:"#d97706",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>🚦 ٹریفک نشانات ({ALL_SIGNS.length} سوالات)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
           {SETS.filter(s=>s.cat==="نشانات").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:10,padding:"12px 10px",cursor:"pointer",textAlign:"right",direction:"rtl"}}>
-              <div style={{fontWeight:800,fontSize:15,color:"#000",...urduFont}}>{set.label}</div>
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"right",direction:"rtl",minHeight:64,display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#000",...urduFont,lineHeight:1.4,display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}><span>{set.label}</span><span style={{fontSize:11,fontWeight:700,fontFamily:"sans-serif",direction:"ltr",color:"#0c4a6e"}}>{set.range}</span></div>
               
             </button>
           ))}
@@ -334,8 +334,8 @@ function App(){
         <p style={{fontSize:13,letterSpacing:0,color:"#0284c7",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>📋 ڈرائیونگ قوانین ({ALL_RULES.length} سوالات)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
           {SETS.filter(s=>s.cat==="قوانین").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#0ea5e9",border:"2px solid #0284c7",borderRadius:10,padding:"12px 10px",cursor:"pointer",textAlign:"right",direction:"rtl"}}>
-              <div style={{fontWeight:800,fontSize:15,color:"#000",...urduFont}}>{set.label}</div>
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#0ea5e9",border:"2px solid #0284c7",borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"right",direction:"rtl",minHeight:64,display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#000",...urduFont,lineHeight:1.4,display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}><span>{set.label}</span><span style={{fontSize:11,fontWeight:700,fontFamily:"sans-serif",direction:"ltr",color:"#0c4a6e"}}>{set.range}</span></div>
               
             </button>
           ))}
