@@ -373,8 +373,8 @@ function App(){
         <p style={{fontSize:13,letterSpacing:0,color:"#d97706",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>🚦 ٹریفک نشانات ({ALL_SIGNS.length} سوالات)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
           {SETS.filter(s=>s.cat==="نشانات").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"right",direction:"rtl",minHeight:64,display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#000",...urduFont,lineHeight:1.4,display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}><span>{set.label}</span><span style={{fontSize:11,fontWeight:700,fontFamily:"sans-serif",direction:"ltr",color:"#0c4a6e"}}>{set.range}</span></div>
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#f59e0b",border:"2px solid #d97706",borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"center",direction:"rtl",minHeight:64,display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#000",...urduFont,lineHeight:1.4,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}><span>{set.label}</span><span style={{fontSize:11,fontWeight:700,fontFamily:"sans-serif",direction:"ltr",color:"#0c4a6e"}}>{set.range}</span></div>
               
             </button>
           ))}
@@ -384,8 +384,8 @@ function App(){
         <p style={{fontSize:13,letterSpacing:0,color:"#0284c7",textTransform:"uppercase",fontWeight:800,marginBottom:3,...urduFont}}>📋 ڈرائیونگ قوانین ({ALL_RULES.length} سوالات)</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:6,marginBottom:8}}>
           {SETS.filter(s=>s.cat==="قوانین").map(set=>(
-            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#0ea5e9",border:"2px solid #0284c7",borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"right",direction:"rtl",minHeight:64,display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-              <div style={{fontWeight:800,fontSize:14,color:"#000",...urduFont,lineHeight:1.4,display:"flex",flexDirection:"column",alignItems:"flex-end",gap:2}}><span>{set.label}</span><span style={{fontSize:11,fontWeight:700,fontFamily:"sans-serif",direction:"ltr",color:"#0c4a6e"}}>{set.range}</span></div>
+            <button key={set.key} onClick={()=>startSet(set)} style={{background:"#0ea5e9",border:"2px solid #0284c7",borderRadius:10,padding:"10px 8px",cursor:"pointer",textAlign:"center",direction:"rtl",minHeight:64,display:"flex",alignItems:"center",justifyContent:"center",width:"100%"}}>
+              <div style={{fontWeight:800,fontSize:14,color:"#000",...urduFont,lineHeight:1.4,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}><span>{set.label}</span><span style={{fontSize:11,fontWeight:700,fontFamily:"sans-serif",direction:"ltr",color:"#0c4a6e"}}>{set.range}</span></div>
               
             </button>
           ))}
