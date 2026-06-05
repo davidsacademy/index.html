@@ -1,1 +1,357 @@
+<!DOCTYPE html>
+<html lang="pa">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>G1 ਟੈਸਟ ਤਿਆਰੀ – David's Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: linear-gradient(160deg, #f0f9ff 0%, #e0f2fe 40%, #f0fdf4 100%);
+  min-height: 100vh;
+  font-family: 'Noto Sans Gurmukhi', 'Segoe UI', system-ui, sans-serif;
+  color: #1e293b;
+  padding-top: env(safe-area-inset-top);
+}
+#root { min-height: 100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect } = React;
 
+const S = {
+  noLeft:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><circle cx="60" cy="60" r="50" fill="white" stroke="#CC0000" strokeWidth="5"/><line x1="22" y1="22" x2="98" y2="98" stroke="#CC0000" strokeWidth="8" strokeLinecap="round"/><path d="M75,75 L75,50 Q75,38 63,38 L42,38" fill="none" stroke="#222" strokeWidth="7" strokeLinecap="round"/><polygon points="46,28 32,38 46,48" fill="#222"/></svg>,
+  winding:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><path d="M52,90 Q68,72 52,55 Q38,38 55,22" fill="none" stroke="#000" strokeWidth="6" strokeLinecap="round"/><polygon points="52,16 58,16 55,8" fill="#000"/></svg>,
+  yieldTri:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><polygon points="60,10 112,102 8,102" fill="#FF6600" stroke="#000" strokeWidth="4"/><polygon points="60,28 98,94 22,94" fill="white"/><text x="60" y="88" textAnchor="middle" fill="#CC0000" fontSize="11" fontWeight="900" fontFamily="Arial Black">YIELD</text></svg>,
+  construct:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FF8C00" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><text x="60" y="53" textAnchor="middle" fill="#000" fontSize="28">🚧</text><text x="60" y="72" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">CONSTRUCTION</text></svg>,
+  noUTurn:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><circle cx="60" cy="60" r="50" fill="white" stroke="#CC0000" strokeWidth="5"/><line x1="22" y1="22" x2="98" y2="98" stroke="#CC0000" strokeWidth="8" strokeLinecap="round"/><path d="M35,82 L35,50 Q35,28 60,28 Q85,28 85,50 L85,72" fill="none" stroke="#222" strokeWidth="6" strokeLinecap="round"/><polygon points="77,62 88,74 96,63" fill="#222"/></svg>,
+  trafficAhd:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><rect x="46" y="30" width="28" height="60" rx="6" fill="#222"/><circle cx="60" cy="44" r="8" fill="#FF0000"/><circle cx="60" cy="60" r="8" fill="#555"/><circle cx="60" cy="76" r="8" fill="#555"/></svg>,
+  destination:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="8" y="34" width="104" height="16" rx="3" fill="#006633"/><rect x="8" y="54" width="104" height="16" rx="3" fill="#006633"/><rect x="8" y="74" width="104" height="16" rx="3" fill="#006633"/><text x="60" y="46" textAnchor="middle" fill="white" fontSize="8" fontFamily="Arial" fontWeight="bold">KINGSTON ↑</text><text x="60" y="66" textAnchor="middle" fill="white" fontSize="8" fontFamily="Arial" fontWeight="bold">↙ NEWMARKET</text><text x="60" y="86" textAnchor="middle" fill="white" fontSize="8" fontFamily="Arial" fontWeight="bold">TORONTO →</text></svg>,
+  stop:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><polygon points="38,10 82,10 110,38 110,82 82,110 38,110 10,82 10,38" fill="#CC0000" stroke="white" strokeWidth="4"/><text x="60" y="68" textAnchor="middle" fill="white" fontSize="22" fontWeight="900" fontFamily="Arial Black">STOP</text></svg>,
+  yield:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><polygon points="60,8 112,104 8,104" fill="white" stroke="#CC0000" strokeWidth="6"/><text x="60" y="82" textAnchor="middle" fill="#CC0000" fontSize="13" fontWeight="900" fontFamily="Arial Black">YIELD</text></svg>,
+  warning:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="20" y="20" width="80" height="80" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><text x="60" y="54" textAnchor="middle" fill="#000" fontSize="26">⚠</text><text x="60" y="72" textAnchor="middle" fill="#000" fontSize="10" fontWeight="700" fontFamily="Arial">WARNING</text></svg>,
+  solidCentre:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="#1a1a1a" stroke="#555" strokeWidth="2"/><rect x="10" y="32" width="100" height="56" rx="3" fill="#2a2a2a"/><line x1="14" y1="60" x2="106" y2="60" stroke="#FFD200" strokeWidth="5"/><line x1="14" y1="48" x2="106" y2="48" stroke="white" strokeWidth="4" strokeDasharray="14,10"/></svg>,
+  flashRed:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="40" y="10" width="40" height="100" rx="10" fill="#222"/><circle cx="60" cy="30" r="13" fill="#FF0000"/><circle cx="60" cy="60" r="13" fill="#333"/><circle cx="60" cy="90" r="13" fill="#333"/></svg>,
+  railroad:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><circle cx="60" cy="60" r="52" fill="white" stroke="#000" strokeWidth="4"/><line x1="20" y1="20" x2="100" y2="100" stroke="#CC0000" strokeWidth="9" strokeLinecap="round"/><line x1="100" y1="20" x2="20" y2="100" stroke="#CC0000" strokeWidth="9" strokeLinecap="round"/><text x="32" y="46" textAnchor="middle" fill="#000" fontSize="18" fontWeight="900" fontFamily="Arial Black">R</text><text x="88" y="46" textAnchor="middle" fill="#000" fontSize="18" fontWeight="900" fontFamily="Arial Black">R</text></svg>,
+  greenArrow:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="40" y="10" width="40" height="100" rx="10" fill="#222"/><circle cx="60" cy="30" r="13" fill="#333"/><circle cx="60" cy="60" r="13" fill="#333"/><circle cx="60" cy="90" r="13" fill="#00AA00"/><polygon points="60,80 66,88 63,88 63,100 57,100 57,88 54,88" fill="white"/></svg>,
+  doNotEnter:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><circle cx="60" cy="60" r="52" fill="#CC0000" stroke="white" strokeWidth="4"/><rect x="22" y="50" width="76" height="20" rx="3" fill="white"/></svg>,
+  school:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="#003399" stroke="white" strokeWidth="3"/><circle cx="42" cy="28" r="8" fill="white"/><line x1="42" y1="36" x2="42" y2="62" stroke="white" strokeWidth="5" strokeLinecap="round"/><line x1="42" y1="45" x2="30" y2="55" stroke="white" strokeWidth="4" strokeLinecap="round"/><line x1="42" y1="45" x2="54" y2="55" stroke="white" strokeWidth="4" strokeLinecap="round"/><line x1="42" y1="62" x2="34" y2="78" stroke="white" strokeWidth="4" strokeLinecap="round"/><line x1="42" y1="62" x2="50" y2="78" stroke="white" strokeWidth="4" strokeLinecap="round"/><circle cx="72" cy="24" r="7" fill="white"/><line x1="72" y1="31" x2="72" y2="55" stroke="white" strokeWidth="5" strokeLinecap="round"/><line x1="72" y1="40" x2="60" y2="50" stroke="white" strokeWidth="4" strokeLinecap="round"/><line x1="72" y1="40" x2="84" y2="50" stroke="white" strokeWidth="4" strokeLinecap="round"/><line x1="72" y1="55" x2="64" y2="72" stroke="white" strokeWidth="4" strokeLinecap="round"/><line x1="72" y1="55" x2="80" y2="72" stroke="white" strokeWidth="4" strokeLinecap="round"/></svg>,
+  speed50:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#000" strokeWidth="4"/><text x="60" y="36" textAnchor="middle" fill="#000" fontSize="11" fontWeight="700" fontFamily="Arial">MAXIMUM</text><text x="60" y="80" textAnchor="middle" fill="#000" fontSize="50" fontWeight="900" fontFamily="Arial Black">50</text><text x="60" y="98" textAnchor="middle" fill="#000" fontSize="11" fontWeight="700" fontFamily="Arial">km/h</text></svg>,
+  noParking:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#000" strokeWidth="3"/><circle cx="60" cy="60" r="42" fill="white" stroke="#CC0000" strokeWidth="6"/><line x1="30" y1="30" x2="90" y2="90" stroke="#CC0000" strokeWidth="7" strokeLinecap="round"/><text x="60" y="68" textAnchor="middle" fill="#000" fontSize="30" fontWeight="900" fontFamily="Arial Black">P</text></svg>,
+  newDriver:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="#006633" stroke="white" strokeWidth="3"/><text x="60" y="80" textAnchor="middle" fill="white" fontSize="72" fontWeight="900" fontFamily="Arial Black">N</text></svg>,
+  flashAmber:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="40" y="10" width="40" height="100" rx="10" fill="#222"/><circle cx="60" cy="30" r="13" fill="#333"/><circle cx="60" cy="60" r="13" fill="#FFB800"/><circle cx="60" cy="90" r="13" fill="#333"/></svg>,
+  keepRight:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#000" strokeWidth="3"/><text x="60" y="38" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">KEEP RIGHT</text><text x="60" y="54" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">EXCEPT</text><text x="60" y="70" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">TO PASS</text><polygon points="60,80 75,95 65,95 65,108 55,108 55,95 45,95" fill="#000"/></svg>,
+  rightLane:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#000" strokeWidth="3"/><text x="60" y="34" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">RIGHT LANE</text><text x="60" y="50" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">MUST</text><text x="60" y="66" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">EXIT</text><polygon points="60,76 75,91 65,91 65,108 55,108 55,91 45,91" fill="#000"/></svg>,
+  slowVehicle:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><polygon points="60,8 112,102 8,102" fill="#FF6600" stroke="#000" strokeWidth="4"/><polygon points="60,24 100,94 20,94" fill="white"/></svg>,
+  schoolBus:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="12" y="35" width="96" height="55" rx="6" fill="#FFD200" stroke="#000" strokeWidth="3"/><circle cx="30" cy="95" r="9" fill="#333"/><circle cx="90" cy="95" r="9" fill="#333"/><text x="60" y="55" textAnchor="middle" fill="#CC0000" fontSize="8" fontWeight="900" fontFamily="Arial">SCHOOL BUS</text></svg>,
+  dividedHwy:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><line x1="50" y1="60" x2="30" y2="60" stroke="#000" strokeWidth="4"/><line x1="70" y1="60" x2="90" y2="60" stroke="#000" strokeWidth="4"/><polygon points="26,56 26,64 18,60" fill="#000"/><polygon points="94,56 94,64 102,60" fill="#000"/></svg>,
+  narrowBridge:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><rect x="48" y="40" width="24" height="40" rx="2" fill="#000"/><polygon points="32,56 40,60 32,64" fill="#000"/><polygon points="88,56 80,60 88,64" fill="#000"/></svg>,
+  noTrucks:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><circle cx="60" cy="60" r="50" fill="white" stroke="#CC0000" strokeWidth="5"/><line x1="22" y1="22" x2="98" y2="98" stroke="#CC0000" strokeWidth="8" strokeLinecap="round"/><text x="60" y="66" textAnchor="middle" fontSize="28">🚛</text></svg>,
+  slippery:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><text x="60" y="58" textAnchor="middle" fontSize="28">🚗</text><path d="M38,75 Q60,65 82,75" fill="none" stroke="#000" strokeWidth="4" strokeLinecap="round"/></svg>,
+  steepHill:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><path d="M30,85 L60,35 L90,85" fill="none" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  intersectionAhd:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#ddd" strokeWidth="2"/><rect x="22" y="22" width="76" height="76" rx="5" fill="#FFD200" stroke="#000" strokeWidth="4" transform="rotate(45 60 60)"/><line x1="60" y1="30" x2="60" y2="90" stroke="#000" strokeWidth="5"/><line x1="30" y1="60" x2="90" y2="60" stroke="#000" strokeWidth="5"/><polygon points="56,26 60,16 64,26" fill="#000"/></svg>,
+  hospital:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="#1a56db"/><text x="60" y="80" textAnchor="middle" fill="white" fontSize="72" fontWeight="900" fontFamily="Arial Black">H</text></svg>,
+  playground:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="#FFD200" stroke="#000" strokeWidth="3"/><text x="60" y="56" textAnchor="middle" fontSize="36">⛹</text><text x="60" y="80" textAnchor="middle" fill="#000" fontSize="9" fontWeight="700" fontFamily="Arial">PLAYGROUND</text></svg>,
+  regulatory:(z)=><svg viewBox="0 0 120 120" width={z} height={z}><rect x="4" y="4" width="112" height="112" rx="7" fill="white" stroke="#000" strokeWidth="4"/><text x="60" y="45" textAnchor="middle" fill="#CC0000" fontSize="28" fontWeight="900" fontFamily="Arial Black">R</text><text x="60" y="70" textAnchor="middle" fill="#000" fontSize="10" fontWeight="700" fontFamily="Arial">REGULATORY</text></svg>,
+};
+
+const ALL_SIGNS = [
+  {id:"ps1",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"noLeft",q:"ਇਸ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਸਿਰਫ਼ ਸੱਜੇ ਮੁੜ ਸਕਦੇ ਹੋ","ਤੁਸੀਂ ਖੱਬੇ ਨਹੀਂ ਮੁੜ ਸਕਦੇ","ਅੱਗੇ ਲੁਕਵਾਂ ਚੌਕ ਹੈ","ਅੱਗੇ ਵਿਚਕਾਰ ਸੀਮੈਂਟ ਦੀ ਪਟਵੀ ਆ ਰਹੀ ਹੈ"],ans:1,exp:"ਇਹ ਚਿੰਨ੍ਹ ਦੱਸਦਾ ਹੈ ਕਿ ਇੱਥੇ ਖੱਬੇ ਮੁੜਨਾ ਮਨਾਂਹ ਹੈ।"},
+  {id:"ps2",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"winding",q:"ਇਹ ਪੀਲਾ ਡਾਇਮੰਡ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਸੜਕ ਦੇ ਵਿਚਕਾਰ ਵਾਲੀ ਪਟੀ ਤੋਂ ਸੱਜੇ ਪਾਸੇ ਰੱਖੋ","ਸੜਕ ਪਹਿਲਾਂ ਸੱਜੇ ਫਿਰ ਖੱਬੇ ਮੁੜਦੀ ਹੈ","ਅੱਗੇ ਸੜਕ ਵਿੱਚ ਵਿੰਗੇ-ਟੇਢੇ ਮੋੜ ਹਨ","ਦੂਸਰੀਆਂ ਗੱਡੀਆਂ ਨੂੰ ਸੱਜੇ ਪਾਸੇ ਮੁੜਨ ਦਿਓ"],ans:2,exp:"ਇਹ ਚਿੰਨ੍ਹ ਅੱਗੇ ਟੇਢੀ-ਮੇਢੀ ਸੜਕ ਦੀ ਚੇਤਾਵਨੀ ਦਿੰਦਾ ਹੈ। ਰਫ਼ਤਾਰ ਘੱਟ ਕਰੋ।"},
+  {id:"ps3",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"yieldTri",q:"ਇਸ ਸੰਤਰੀ ਤਿਕੋਣੀ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਰੁਕਣ ਦਾ ਚਿੰਨ੍ਹ ਹੈ","ਦੂਸਰਿਆਂ ਨੂੰ ਪਹਿਲਾਂ ਜਾਣ ਦਿਓ","ਅੱਗੇ ਸੜਕ ਬੰਦ ਹੁੰਦੀ ਹੈ","ਅੱਗੇ ਹੌਲੀ ਚਲਣ ਵਾਲੀ ਗੱਡੀ ਜਾ ਰਹੀ ਹੈ"],ans:1,exp:"ਉਲਟਾ ਸੰਤਰੀ ਤਿਕੋਣ ਮਤਲਬ ਦੂਸਰਿਆਂ ਨੂੰ ਰਸਤਾ ਦਿਓ।"},
+  {id:"ps4",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"construct",q:"ਇਹ ਸੰਤਰੀ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਸੜਕ ਦੀ ਮੁਰੰਮਤ ਚੱਲ ਰਹੀ ਹੈ, ਝੰਡੀ ਵਾਲੇ ਦੇ ਇਸ਼ਾਰੇ ਤੇ ਚੱਲੋ","ਝੰਡੀ ਵਾਲੇ ਦੀ ਥਾਂ ਤੇ ਚਿੰਨ੍ਹ ਲੱਗਾ ਹੈ","ਗੱਡੀ ਹੌਲੀ ਕਰਨ ਦਾ ਚਿੰਨ੍ਹ ਹੈ","ਸਾਵਧਾਨ! ਅੱਗੇ ਕੰਮ ਚੱਲ ਰਿਹਾ ਹੈ"],ans:3,exp:"ਇਹ ਸੰਤਰੀ ਡਾਇਮੰਡ ਚਿੰਨ੍ਹ ਅੱਗੇ ਉਸਾਰੀ ਦੇ ਕੰਮ ਦੀ ਚੇਤਾਵਨੀ ਦਿੰਦਾ ਹੈ।"},
+  {id:"ps5",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"noUTurn",q:"ਇਸ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਗਿੱਲੇ ਵਿੱਚ ਸੜਕ ਤਿਲਕਣੀ ਹੋ ਸਕਦੀ ਹੈ","ਸੱਜੇ ਮੁੜਨਾ ਮਨਾਂਹ ਹੈ","ਖੱਬੇ ਮੁੜਨਾ ਮਨਾਂਹ ਹੈ","ਯੂ ਟਰਨ ਮਾਰਨੀ ਮਨਾਂਹ ਹੈ"],ans:3,exp:"ਇਹ ਚਿੰਨ੍ਹ ਯੂ-ਟਰਨ ਤੇ ਪਾਬੰਦੀ ਦੱਸਦਾ ਹੈ।"},
+  {id:"ps6",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"trafficAhd",q:"ਟ੍ਰੈਫਿਕ ਲਾਈਟ ਵਾਲੇ ਪੀਲੇ ਡਾਇਮੰਡ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਬੱਤੀਆਂ ਆ ਰਹੀਆਂ ਹਨ","150 ਮੀਟਰ ਦੀ ਦੂਰੀ ਤੇ ਰੁਕਣ ਦਾ ਨਿਸ਼ਾਨ ਹੈ","125 ਮੀਟਰ ਦੀ ਦੂਰੀ ਤੇ ਉੱਚੀ ਨੀਵੀਂ ਸੜਕ ਆ ਰਹੀ ਹੈ","ਅੱਗੇ ਰੇਲ ਦਾ ਫਾਟਕ ਆ ਰਿਹਾ ਹੈ"],ans:0,exp:"ਇਹ ਚਿੰਨ੍ਹ ਦੱਸਦਾ ਹੈ ਕਿ ਅੱਗੇ ਟ੍ਰੈਫਿਕ ਸਿਗਨਲ ਲਾਈਟਾਂ ਹਨ।"},
+  {id:"ps7",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"destination",q:"ਸ਼ਹਿਰਾਂ ਦੇ ਨਾਂ ਅਤੇ ਦਿਸ਼ਾਵਾਂ ਦੱਸਣ ਵਾਲੇ ਚਿੰਨ੍ਹ ਨੂੰ ਕੀ ਕਿਹਾ ਜਾਂਦਾ ਹੈ?",opts:["ਵੱਖ ਵੱਖ ਰਸਤਿਆਂ ਤੇ ਜਾਣ ਦਾ ਚਿੰਨ੍ਹ","ਅੱਗੇ ਸਕੂਲ ਹੈ, ਬੱਚਿਆਂ ਦਾ ਧਿਆਨ ਰੱਖੋ","ਪਾਰਕ ਦਾ ਚਿੰਨ੍ਹ","ਤੁਰਨ ਵਾਲਿਆਂ ਵਾਸਤੇ, ਖੇਡ ਨਹੀਂ ਸਕਦੇ"],ans:0,exp:"ਹਰੇ ਰੰਗ ਦੇ ਚਿੰਨ੍ਹ ਜਿਸ ਤੇ ਸ਼ਹਿਰਾਂ ਦੇ ਨਾਂ ਅਤੇ ਤੀਰ ਹਨ ਉਹ ਮੰਜ਼ਿਲ ਬੋਰਡ ਹਨ।"},
+  {id:"ps8",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"stop",q:"ਇਸ ਲਾਲ ਅਠਭੁਜੀ STOP ਚਿੰਨ੍ਹ ਤੇ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਹੌਲੀ ਕਰੋ ਅਤੇ ਰਸਤਾ ਦਿਓ","ਸਿਰਫ਼ ਪੈਦਲ ਚੱਲਣ ਵਾਲਿਆਂ ਨੂੰ ਰਸਤਾ ਦਿਓ","ਰੁਕਣ ਦੀ ਲਾਈਨ ਤੋਂ ਪਹਿਲਾਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੁਕੋ","ਹੌਲੀ ਕਰੋ ਅਤੇ ਸਾਵਧਾਨੀ ਨਾਲ ਅੱਗੇ ਵਧੋ"],ans:2,exp:"STOP ਚਿੰਨ੍ਹ ਤੇ ਰੁਕਣ ਦੀ ਲਾਈਨ ਤੋਂ ਪਹਿਲਾਂ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੁਕਣਾ ਜ਼ਰੂਰੀ ਹੈ।"},
+  {id:"ps9",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"yield",q:"ਉਲਟੇ ਲਾਲ ਤਿਕੋਣ ਚਿੰਨ੍ਹ (Yield) ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੁਕੋ","ਹੌਲੀ ਕਰੋ, ਲੋੜ ਪਏ ਰੁਕੋ, ਅਤੇ ਦੂਸਰਿਆਂ ਨੂੰ ਰਸਤਾ ਦਿਓ","ਤੇਜ਼ ਕਰਕੇ ਰਲ ਜਾਓ","ਹਾਰਨ ਵਜਾਓ"],ans:1,exp:"ਯੀਲਡ ਚਿੰਨ੍ਹ: ਹੌਲੀ ਕਰੋ, ਲੋੜ ਪਏ ਰੁਕੋ, ਅਤੇ ਰਸਤਾ ਦਿਓ।"},
+  {id:"ps10",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"warning",q:"ਪੀਲੇ ਡਾਇਮੰਡ ਆਕਾਰ ਦੇ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦੇ ਹਨ?",opts:["ਕੋਈ ਲਾਜ਼ਮੀ ਹਦਾਇਤ","ਅੱਗੇ ਖ਼ਤਰੇ ਦੀ ਚੇਤਾਵਨੀ","ਕਾਨੂੰਨੀ ਨਿਯਮ","ਸੈਲਾਨੀ ਜਾਣਕਾਰੀ"],ans:1,exp:"ਪੀਲੇ ਡਾਇਮੰਡ ਚਿੰਨ੍ਹ ਚੇਤਾਵਨੀ ਦੇਣ ਵਾਲੇ ਚਿੰਨ੍ਹ ਹਨ ਜੋ ਅੱਗੇ ਆਉਣ ਵਾਲੇ ਖ਼ਤਰਿਆਂ ਬਾਰੇ ਸੁਚੇਤ ਕਰਦੇ ਹਨ।"},
+  {id:"ps11",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"solidCentre",q:"ਤੁਹਾਡੇ ਪਾਸੇ ਸੰਪੂਰਨ ਵਿਚਕਾਰਲੀ ਲਾਈਨ (ਟੁੱਟਵੀਂ ਨਾਲ) ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਕਿਸੇ ਵੀ ਟਾਈਮ ਦੂਸਰੀ ਗੱਡੀ ਤੋਂ ਅੱਗੇ ਲੰਘੋ","ਅੱਗੇ ਲੰਘਣਾ ਸੁਰੱਖਿਅਤ ਹੈ","ਉਦੋਂ ਪਾਸ ਕਰੋ ਜਦੋਂ ਕੋਈ ਗੱਡੀ ਨਹੀਂ ਆ ਰਹੀ","ਦੂਸਰੀ ਗੱਡੀ ਨੂੰ ਪਾਸ ਕਰਨਾ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਹੈ"],ans:3,exp:"ਤੁਹਾਡੇ ਪਾਸੇ ਸੰਪੂਰਨ ਲਾਈਨ ਮਤਲਬ ਅੱਗੇ ਲੰਘਣਾ ਸੁਰੱਖਿਅਤ ਨਹੀਂ ਅਤੇ ਗ਼ੈਰਕਾਨੂੰਨੀ ਹੈ।"},
+  {id:"ps12",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"flashRed",q:"ਚੌਕ ਵਿੱਚ ਲਾਲ ਬੱਤੀ ਫਲੈਸ਼ ਕਰਦੀ ਹੋਵੇ ਤਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਹੌਲੀ ਕਰੋ ਅਤੇ ਅੱਗੇ ਵਧੋ","ਰੁਕੋ, ਅਗਰ ਰਸਤਾ ਸੁਰੱਖਿਅਤ ਹੈ ਤਾਂ ਅੱਗੇ ਲੰਘੋ","ਸਾਹਮਣੇ ਆ ਰਹੀਆਂ ਗੱਡੀਆਂ ਨੂੰ ਰਸਤਾ ਦਿਓ","ਬੱਤੀ ਖਰਾਬ ਹੈ ਤਾਂ ਧਿਆਨ ਨਾਲ ਲੰਘੋ"],ans:1,exp:"ਫਲੈਸ਼ ਕਰਦੀ ਲਾਲ ਬੱਤੀ ਨੂੰ STOP ਚਿੰਨ੍ਹ ਵਾਂਗੂ ਮੰਨੋ — ਰੁਕੋ, ਫਿਰ ਸੁਰੱਖਿਅਤ ਹੋਣ ਤੇ ਅੱਗੇ ਵਧੋ।"},
+  {id:"ps13",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"railroad",q:"ਇਹ ਗੋਲ RR ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਸੜਕ ਖੁਰਦਰੀ ਹੈ","ਅੱਗੇ ਰੇਲਵੇ ਕਰਾਸਿੰਗ ਆ ਰਿਹਾ ਹੈ","ਆਰਾਮ ਦਾ ਥਾਂ ਨੇੜੇ ਹੈ","ਅੱਗੇ ਚੱਕਰ ਵਾਲਾ ਚੌਕ ਹੈ"],ans:1,exp:"ਇਹ ਗੋਲ RR ਚਿੰਨ੍ਹ ਅੱਗੇ ਰੇਲਵੇ ਕਰਾਸਿੰਗ ਦੀ ਚੇਤਾਵਨੀ ਦਿੰਦਾ ਹੈ।"},
+  {id:"ps14",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"greenArrow",q:"ਟ੍ਰੈਫਿਕ ਲਾਈਟ ਵਿੱਚ ਹਰੇ ਤੀਰ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਸਿਰਫ਼ ਯੂ-ਟਰਨ","ਤੀਰ ਦੀ ਦਿਸ਼ਾ ਵਿੱਚ ਸੁਰੱਖਿਅਤ ਮੋੜ ਲੈ ਸਕਦੇ ਹੋ","ਸਾਵਧਾਨੀ ਨਾਲ ਅੱਗੇ ਵਧੋ","ਸਿਰਫ਼ ਪੈਦਲ ਚੱਲਣ ਵਾਲਿਆਂ ਲਈ"],ans:1,exp:"ਹਰਾ ਤੀਰ ਸੁਰੱਖਿਅਤ ਸਿਗਨਲ ਹੈ — ਉਸ ਦਿਸ਼ਾ ਵਿੱਚ ਚੱਲੋ; ਸਾਹਮਣੇ ਵਾਲੀ ਟ੍ਰੈਫਿਕ ਰੁਕੀ ਹੋਈ ਹੈ।"},
+  {id:"ps15",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"doNotEnter",q:"ਲਾਲ ਚੱਕਰ ਵਿੱਚ ਚਿੱਟੀ ਲਾਈਨ ਵਾਲੇ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਇਸ ਸੜਕ ਤੇ ਦਾਖ਼ਲ ਨਹੀਂ ਹੋ ਸਕਦੇ","ਟਰੱਕਾਂ ਲਈ ਮਨਾਂਹ ਹੈ","ਅੱਗੇ ਉਸਾਰੀ ਦਾ ਕੰਮ ਹੈ","ਖੱਬੇ ਮੁੜਨਾ ਮਨਾਂਹ ਹੈ"],ans:0,exp:"ਲਾਲ ਚੱਕਰ ਵਿੱਚ ਚਿੱਟੀ ਲਾਈਨ ਦਾ ਮਤਲਬ — ਦਾਖ਼ਲ ਨਾ ਹੋਵੋ।"},
+  {id:"ps16",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"school",q:"ਨੀਲੇ ਰੰਗ ਦਾ ਸਕੂਲ ਕਰਾਸਿੰਗ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਖੇਡ ਦੇ ਮੈਦਾਨ ਦਾ ਚਿੰਨ੍ਹ","ਅੱਗੇ ਵਸੋਂ ਵਾਲੇ ਹਲਕੇ ਵਿੱਚ ਬੱਚੇ ਖੇਡ ਰਹੇ ਹਨ","ਸਕੂਲ ਕਰਾਸਿੰਗ — ਬੱਚਿਆਂ ਦਾ ਖਿਆਲ ਰੱਖੋ","ਬੱਚਿਆਂ ਵਾਸਤੇ ਵੱਖ ਵੱਖ ਪਾਸਿਆਂ ਨੂੰ ਜਾਣ ਦਾ ਚਿੰਨ੍ਹ"],ans:2,exp:"ਇਹ ਨੀਲਾ ਚਿੰਨ੍ਹ ਸਕੂਲ ਕਰਾਸਿੰਗ ਦਰਸਾਉਂਦਾ ਹੈ। ਹੌਲੀ ਕਰੋ ਅਤੇ ਬੱਚਿਆਂ ਦਾ ਧਿਆਨ ਰੱਖੋ।"},
+  {id:"ps17",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"speed50",q:"ਇਸ ਚਿੱਟੇ ਚੌਰਸ MAXIMUM 50 ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਇਸ ਚਿੰਨ੍ਹ ਤੋਂ ਅਗਲੇ ਚਿੰਨ੍ਹ ਤੱਕ ਵੱਧ ਤੋਂ ਵੱਧ ਰਫ਼ਤਾਰ 50 ਕਿਲੋਮੀਟਰ","ਬਸਤੀ ਵਾਲੇ ਏਰੀਏ ਵਿੱਚ ਸਕੂਲ ਦੀ ਜਗ੍ਹਾ ਤੇ ਰਫ਼ਤਾਰ ਦੀ ਹੱਦ","50 ਕਿਲੋਮੀਟਰ ਰਫ਼ਤਾਰ ਦਾ ਏਰੀਆ ਖਤਮ ਹੋ ਰਿਹਾ ਹੈ","ਅੱਗੇ ਜਾ ਕੇ ਵੱਧ ਤੋਂ ਵੱਧ ਰਫ਼ਤਾਰ 50 ਕਿਲੋਮੀਟਰ ਫ਼ੀ ਘੰਟੇ ਦੀ ਹੈ"],ans:3,exp:"ਇਹ ਚਿੰਨ੍ਹ ਦੱਸਦਾ ਹੈ ਕਿ ਤੁਸੀਂ 50 ਕਿਲੋਮੀਟਰ ਪ੍ਰਤੀ ਘੰਟੇ ਤੋਂ ਵੱਧ ਰਫ਼ਤਾਰ ਨਾਲ ਨਹੀਂ ਚੱਲ ਸਕਦੇ।"},
+  {id:"ps18",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"noParking",q:"ਨੋ ਪਾਰਕਿੰਗ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਤੁਸੀਂ ਥੋੜੀ ਦੇਰ ਰੁਕ ਸਕਦੇ ਹੋ ਜੇ ਡਰਾਈਵਰ ਗੱਡੀ ਵਿੱਚ ਰਹੇ","5 ਮਿੰਟ ਤੋਂ ਘੱਟ ਪਾਰਕ ਕਰ ਸਕਦੇ ਹੋ","ਸਵਾਰੀਆਂ ਚੜ੍ਹਾਉਣ ਜਾਂ ਉਤਾਰਨ ਲਈ ਰੁਕ ਸਕਦੇ ਹੋ","ਗੱਡੀ ਪਾਰਕ ਨਹੀਂ ਕਰ ਸਕਦੇ"],ans:3,exp:"ਨੋ ਪਾਰਕਿੰਗ ਚਿੰਨ੍ਹ ਦਾ ਮਤਲਬ ਉਸ ਥਾਂ ਗੱਡੀ ਖੜ੍ਹੀ ਨਹੀਂ ਕਰ ਸਕਦੇ।"},
+  {id:"ps19",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"newDriver",q:"ਕਿਸੇ ਗੱਡੀ ਤੇ ਲੱਗੇ ਹਰੇ N ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਦਾਖ਼ਲ ਨਹੀਂ","ਨਵੀਂ ਕਾਰ ਦੀ ਦੁਕਾਨ","ਨਵਾਂ ਡਰਾਈਵਰ — G2 ਲਾਈਸੈਂਸ","ਰੌਲਾ ਪਾਉਣ ਦੀ ਮਨਾਹੀ"],ans:2,exp:"ਹਰਾ N ਚਿੰਨ੍ਹ ਓਂਟੇਰੀਓ ਵਿੱਚ G2 (ਨਵੇਂ) ਡਰਾਈਵਰਾਂ ਲਈ ਲਾਜ਼ਮੀ ਹੈ।"},
+  {id:"ps20",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"flashAmber",q:"ਚੌਕ ਵਿੱਚ ਪੀਲੀ ਬੱਤੀ ਫਲੈਸ਼ ਕਰਦੀ ਹੋਵੇ ਤਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਅਗਰ ਸੱਜੇ ਮੁੜਨਾ ਹੈ ਤਾਂ ਰੁਕ ਜਾਓ","ਉਸੇ ਰਫ਼ਤਾਰ ਤੇ ਚਲਦੇ ਜਾਓ","ਅਗਰ ਖੱਬੇ ਪਾਸੇ ਮੁੜਨਾ ਹੋਵੇ ਤਾਂ ਰੁੱਕ ਜਾਓ","ਹੌਲੀ ਹੋਵੋ ਅਤੇ ਸਾਵਧਾਨੀ ਨਾਲ ਅੱਗੇ ਚਲਦੇ ਜਾਓ"],ans:3,exp:"ਫਲੈਸ਼ ਕਰਦੀ ਪੀਲੀ ਬੱਤੀ ਦਾ ਮਤਲਬ — ਹੌਲੀ ਕਰੋ ਅਤੇ ਸਾਵਧਾਨੀ ਨਾਲ ਅੱਗੇ ਵਧੋ।"},
+  {id:"ps21",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"keepRight",q:"KEEP RIGHT EXCEPT TO PASS ਚਿੰਨ੍ਹ ਕੀ ਕਹਿੰਦਾ ਹੈ?",opts:["ਹਮੇਸ਼ਾ ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਰਹੋ","ਸਿਰਫ਼ ਸੱਜੇ ਤੋਂ ਪਾਸ ਕਰੋ","ਖੱਬੀ ਲੇਨ ਵਿੱਚ ਚੱਲੋ ਜਦੋਂ ਤੱਕ ਪਾਸ ਨਾ ਕਰੋ","ਪਾਸ ਕਰਨ ਤੋਂ ਇਲਾਵਾ ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਰਹੋ"],ans:3,exp:"ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਕਿਸੇ ਨੂੰ ਪਾਸ ਨਹੀਂ ਕਰ ਰਹੇ, ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਰਹੋ।"},
+  {id:"ps22",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"rightLane",q:"RIGHT LANE MUST EXIT ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਸੱਜੀ ਲੇਨ ਤੋਂ ਬਾਹਰ ਜਾ ਸਕਦੇ ਹੋ","ਹਾਈਵੇ ਬੰਦ ਹੋ ਰਿਹਾ ਹੈ, ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਆ ਜਾਓ","ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਗੱਡੀ ਨਹੀਂ ਚਲਾਉਣੀ","ਅਗਰ ਤੁਸੀਂ ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਹੋ ਤਾਂ ਹਾਈਵੇ ਤੋਂ ਬਾਹਰ ਜ਼ਰੂਰ ਨਿਕਲਣਾ ਪਵੇਗਾ"],ans:3,exp:"ਜੇ ਤੁਸੀਂ ਸੱਜੀ ਲੇਨ ਵਿੱਚ ਹੋ ਤਾਂ ਅਗਲੇ ਐਗਜ਼ਿਟ ਤੇ ਬਾਹਰ ਜਾਣਾ ਲਾਜ਼ਮੀ ਹੈ।"},
+  {id:"ps23",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"slowVehicle",q:"ਗੱਡੀ ਦੇ ਪਿੱਛੇ ਸੰਤਰੀ ਤਿਕੋਣੀ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਰੁਕਣ ਦਾ ਚਿੰਨ੍ਹ ਹੈ","ਦੂਸਰਿਆਂ ਨੂੰ ਰਸਤਾ ਦਿਓ","ਅੱਗੇ ਸੜਕ ਬੰਦ ਹੈ","ਹੌਲੀ ਚੱਲਣ ਵਾਲੀ ਗੱਡੀ — 40 ਕਿਲੋਮੀਟਰ ਤੋਂ ਘੱਟ"],ans:3,exp:"ਸੰਤਰੀ ਤਿਕੋਣੀ ਚਿੰਨ੍ਹ ਦੱਸਦਾ ਹੈ ਕਿ ਇਹ ਗੱਡੀ 40 ਕਿਲੋਮੀਟਰ ਪ੍ਰਤੀ ਘੰਟੇ ਤੋਂ ਘੱਟ ਰਫ਼ਤਾਰ ਤੇ ਚੱਲਦੀ ਹੈ।"},
+  {id:"ps24",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"schoolBus",q:"ਸਕੂਲ ਬੱਸ ਦੀਆਂ ਲਾਲ ਬੱਤੀਆਂ ਚਮਕਦੀਆਂ ਹੋਣ ਤਾਂ ਦੂਸਰੀਆਂ ਗੱਡੀਆਂ ਦੇ ਡਰਾਈਵਰਾਂ ਨੂੰ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਹੌਲੀ ਕਰੋ ਅਤੇ ਜ਼ਿਆਦਾ ਧਿਆਨ ਨਾਲ ਪਾਸ ਕਰ ਜਾਓ","ਹਾਰਨ ਵਜਾ ਕੇ ਲੰਘ ਜਾਓ","ਸਾਹਮਣੇ ਆ ਰਹੀਆਂ ਗੱਡੀਆਂ ਨੂੰ ਲੰਘਣ ਤੱਕ ਉਡੀਕ ਕਰੋ","ਰੁਕੋ, ਜਦੋਂ ਤੱਕ ਬੱਸ ਚਲੀ ਜਾਵੇ ਜਾਂ ਲਾਲ ਬੱਤੀਆਂ ਬੁੱਝ ਜਾਣ"],ans:3,exp:"ਤੁਹਾਨੂੰ ਰੁਕਣਾ ਅਤੇ ਉਦੋਂ ਤੱਕ ਰੁਕੇ ਰਹਿਣਾ ਚਾਹੀਦਾ ਹੈ ਜਦੋਂ ਤੱਕ ਸਕੂਲ ਬੱਸ ਅੱਗੇ ਨਾ ਚੱਲ ਦੇਵੇ।"},
+  {id:"ps25",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"dividedHwy",q:"ਦੋ ਤੀਰ ਇੱਕ ਦੂਜੇ ਤੋਂ ਦੂਰ ਵੱਲ ਇਸ਼ਾਰਾ ਕਰਦੇ ਪੀਲੇ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਸੜਕ ਦੇ ਵਿਚਕਾਰ ਵੰਡੀ ਬਣੀ ਹੋਈ ਹੈ","ਅੱਗੇ ਸੜਕ ਦੇ ਵਿਚਕਾਰ ਦੀ ਪੰਧੀ ਖਤਮ ਹੋ ਰਹੀ ਹੈ","ਅੱਗੇ ਤੰਗ ਪੁੱਲ ਆ ਰਿਹਾ ਹੈ","ਅੱਗੇ ਸੜਕ ਤੇ ਕੰਮ ਚੱਲ ਰਿਹਾ ਹੈ"],ans:0,exp:"ਦੋ ਦੂਰ ਵੱਲ ਤੀਰ ਦੱਸਦੇ ਹਨ ਕਿ ਅੱਗੇ ਵੰਡੀ ਸੜਕ (ਡਿਵਾਈਡਡ ਹਾਈਵੇ) ਸ਼ੁਰੂ ਹੋ ਰਹੀ ਹੈ।"},
+  {id:"ps26",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"narrowBridge",q:"ਦੋ ਅੰਦਰ ਵੱਲ ਤੀਰ ਵਾਲਾ ਪੀਲਾ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਅੱਗੇ ਵੰਡੀ ਸੜਕ ਹੈ","ਅੱਗੇ ਤੰਗ ਪੁੱਲ ਜਾਂ ਸੜਕ ਤੰਗ ਹੋਣ ਦੀ ਚੇਤਾਵਨੀ","ਅੱਗੇ ਉਸਾਰੀ ਦਾ ਕੰਮ ਹੈ","ਦੋਵੇਂ ਪਾਸੇ ਟ੍ਰੈਫਿਕ ਚੱਲਦੀ ਹੈ"],ans:1,exp:"ਇਹ ਚਿੰਨ੍ਹ ਅੱਗੇ ਤੰਗ ਪੁੱਲ ਜਾਂ ਸੜਕ ਦੇ ਤੰਗ ਹੋਣ ਦੀ ਚੇਤਾਵਨੀ ਦਿੰਦਾ ਹੈ।"},
+  {id:"ps27",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"noTrucks",q:"ਟਰੱਕ ਤੇ ਲਾਲ ਕਰਾਸ ਲਾਈਨ ਵਾਲੇ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਟਰੱਕਾਂ ਵਾਸਤੇ ਰਸਤਾ","ਸਿਰਫ਼ ਵੱਡੇ ਟਰੱਕਾਂ ਵਾਸਤੇ ਰਸਤਾ","ਇਸ ਸੜਕ ਤੇ ਟਰੱਕਾਂ ਦੀ ਮਨਾਂਹ ਹੈ","ਅੱਗੇ ਟਰੱਕਾਂ ਦੀ ਤੋਲਾਈ ਦੀ ਥਾਂ ਹੈ"],ans:2,exp:"ਟਰੱਕ ਤੇ ਲਾਲ ਕਰਾਸ ਲਾਈਨ ਦਾ ਮਤਲਬ ਇਸ ਸੜਕ ਤੇ ਟਰੱਕਾਂ ਦੀ ਮਨਾਂਹ ਹੈ।"},
+  {id:"ps28",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"playground",q:"ਪਲੇਗਰਾਊਂਡ ਜ਼ੋਨ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਸਕੂਲ ਕਰਾਸਿੰਗ ਹੈ","ਸਿਰਫ਼ ਪੈਦਲ ਚੱਲਣ ਵਾਲਿਆਂ ਦਾ ਏਰੀਆ","ਖੇਡ ਦੇ ਮੈਦਾਨ ਦਾ ਚਿੰਨ੍ਹ ਹੈ — ਬੱਚਿਆਂ ਵੱਲ ਧਿਆਨ ਰੱਖੋ","ਬਾਹਰੀ ਖੇਡਾਂ ਦੀ ਮਨਾਂਹ ਹੈ"],ans:2,exp:"ਪਲੇਗਰਾਊਂਡ ਜ਼ੋਨ ਦਾ ਮਤਲਬ ਨੇੜੇ ਬੱਚੇ ਖੇਡ ਸਕਦੇ ਹਨ। ਰਫ਼ਤਾਰ ਘੱਟ ਕਰੋ।"},
+  {id:"ps29",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"regulatory",q:"ਚਿੱਟੇ ਚੌਰਸ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦੇ ਹਨ?",opts:["ਚੇਤਾਵਨੀ ਦੀ ਜਾਣਕਾਰੀ","ਕਾਨੂੰਨੀ ਨਿਯਮ ਜੋ ਮੰਨਣਾ ਜ਼ਰੂਰੀ ਹੈ","ਅੱਗੇ ਉਸਾਰੀ ਦਾ ਕੰਮ ਹੈ","ਸੈਲਾਨੀ ਜਾਣਕਾਰੀ"],ans:1,exp:"ਚਿੱਟੇ ਚੌਰਸ ਚਿੰਨ੍ਹ ਕਾਨੂੰਨੀ ਚਿੰਨ੍ਹ ਹਨ — ਇਹਨਾਂ ਦੇ ਨਿਯਮ ਮੰਨਣੇ ਜ਼ਰੂਰੀ ਹਨ।"},
+  {id:"ps30",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"hospital",q:"ਨੀਲੇ ਰੰਗ ਦੇ H ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਰਿਹਾਇਸ਼ੀ ਏਰੀਆ","ਅੱਗੇ ਹਸਪਤਾਲ ਹੈ","ਘੋੜ-ਦੌੜ","ਪਹਾੜੀਆਂ ਅੱਗੇ ਹਨ"],ans:1,exp:"ਨੀਲੇ H ਚਿੰਨ੍ਹ ਦਾ ਮਤਲਬ ਨੇੜੇ ਹਸਪਤਾਲ ਹੈ।"},
+  {id:"ps31",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"intersectionAhd",q:"ਪੀਲੇ ਡਾਇਮੰਡ ਵਿੱਚ ਕਰਾਸ ਤੀਰ ਵਾਲੇ ਚਿੰਨ੍ਹ ਦਾ ਕੀ ਮਤਲਬ ਹੈ?",opts:["ਅੱਗੇ ਲੁਕਵਾਂ ਚੌਕ ਆ ਰਿਹਾ ਹੈ","ਅੱਗੇ ਸਿਰਫ਼ ਇੱਕ ਪਾਸੇ ਵਾਲੀ ਸੜਕ ਹੈ","ਅੱਗੇ ਵੰਡੀ ਸੜਕ ਹੈ","ਪਟੜੀ ਤੰਗ ਹੋ ਰਹੀ ਹੈ"],ans:0,exp:"ਇਹ ਚਿੰਨ੍ਹ ਅੱਗੇ ਲੁਕਵੇਂ ਚੌਕ ਦੀ ਚੇਤਾਵਨੀ ਦਿੰਦਾ ਹੈ।"},
+  {id:"ps32",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"slippery",q:"ਤਿਲਕਦੀ ਗੱਡੀ ਵਾਲਾ ਪੀਲਾ ਡਾਇਮੰਡ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਅੱਗੇ ਸੜਕ ਉੱਚੀ ਨੀਵੀਂ ਹੈ","ਅੱਗੇ ਪਾਸ ਕਰਨਾ ਮਨਾਂਹ ਹੈ","ਗਿੱਲੇ ਵਿੱਚ ਸੜਕ ਤਿਲਕਣੀ ਹੋ ਸਕਦੀ ਹੈ","ਉਸਾਰੀ ਦਾ ਜ਼ੋਨ ਹੈ"],ans:2,exp:"ਇਹ ਚਿੰਨ੍ਹ ਦੱਸਦਾ ਹੈ ਕਿ ਗਿੱਲੇ ਵਿੱਚ ਸੜਕ ਤਿਲਕਣੀ ਹੋ ਸਕਦੀ ਹੈ — ਰਫ਼ਤਾਰ ਘੱਟ ਕਰੋ।"},
+  {id:"ps33",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"steepHill",q:"ਉੱਚੀ ਚੜ੍ਹਾਈ ਦਾ ਪੀਲਾ ਡਾਇਮੰਡ ਚਿੰਨ੍ਹ ਕੀ ਦੱਸਦਾ ਹੈ?",opts:["ਅੱਗੇ ਗੱਡੀਆਂ ਚੈੱਕ ਕਰ ਰਹੇ ਹਨ","ਸੜਕ ਦੇ ਕਿਨਾਰੇ ਵਾਲੀ ਪੰਧੀ ਖਤਮ ਹੋ ਰਹੀ ਹੈ","ਸਾਵਧਾਨੀ ਨਾਲ ਅੱਗੇ ਬਹੁਤ ਉਤਰਾਈ ਆ ਰਹੀ ਹੈ","ਅੱਗੇ ਸੜਕ ਉੱਚੀ ਨੀਵੀਂ ਬਣੀ ਹੋਈ ਹੈ"],ans:2,exp:"ਇਹ ਚਿੰਨ੍ਹ ਦੱਸਦਾ ਹੈ ਕਿ ਅੱਗੇ ਉੱਚੀ ਚੜ੍ਹਾਈ ਜਾਂ ਉਤਰਾਈ ਹੈ — ਗੇਅਰ ਡਾਊਨ ਕਰੋ।"},
+  {id:"ps34",cat:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ",sv:"school",q:"ਜਦੋਂ ਸਕੂਲ ਬੱਸ ਦੀਆਂ ਲਾਲ ਬੱਤੀਆਂ ਚਮਕਦੀਆਂ ਹੋਣ ਅਤੇ ਬਾਂਹ ਬਾਹਰ ਨਿਕਲੀ ਹੋਵੇ ਤਾਂ ਬੱਸ ਤੋਂ ਕਿੰਨੀ ਦੂਰੀ ਤੇ ਰੁਕਣਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਬੱਸ ਦੇ ਪਿੱਛੇ ਘੱਟੋ-ਘੱਟ 20 ਮੀਟਰ ਪਿੱਛੇ ਰੁਕੋ","ਉਸਾਰੀ ਦਾ ਚਿੰਨ੍ਹ ਹੈ","ਸਕੂਲ ਜ਼ੋਨ ਚਿੰਨ੍ਹ ਹੈ","ਅੱਗੇ ਰੁਕਣ ਦਾ ਚਿੰਨ੍ਹ ਹੈ"],ans:0,exp:"ਜਦੋਂ ਸਕੂਲ ਬੱਸ ਦੀਆਂ ਲਾਲ ਬੱਤੀਆਂ ਚਮਕ ਰਹੀਆਂ ਹੋਣ, ਬੱਸ ਦੇ ਪਿੱਛੇ ਘੱਟੋ-ਘੱਟ 20 ਮੀਟਰ ਰੁਕੋ।"},
+];
+
+const ALL_RULES = [
+  {id:"pr1",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਮੋੜ ਲੈਣ ਜਾਂ ਲੇਨ ਬਦਲਣ ਤੋਂ ਕਿੰਨੀ ਦੂਰੀ ਪਹਿਲਾਂ ਇਸ਼ਾਰਾ ਦੇਣਾ ਜ਼ਰੂਰੀ ਹੈ?",opts:["1 ਸਕਿੰਟ ਪਹਿਲਾਂ","ਘੱਟੋ-ਘੱਟ 30 ਮੀਟਰ ਪਹਿਲਾਂ","ਮੋੜ ਤੋਂ ਐਨ ਪਹਿਲਾਂ","ਸਿਰਫ਼ ਹਾਈਵੇ ਤੇ"],ans:1,exp:"ਮੋੜ ਲੈਣ ਜਾਂ ਲੇਨ ਬਦਲਣ ਤੋਂ ਘੱਟੋ-ਘੱਟ 30 ਮੀਟਰ (ਲਗਭਗ 100 ਫੁੱਟ) ਪਹਿਲਾਂ ਇਸ਼ਾਰਾ ਦੇਵੋ।"},
+  {id:"pr2",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਿੱਥੇ ਕੋਈ ਚਿੰਨ੍ਹ ਨਾ ਹੋਵੇ ਉਸ ਚੌਕ ਵਿੱਚ ਜਦੋਂ ਦੋ ਗੱਡੀਆਂ ਇੱਕੋ ਸਮੇਂ ਆ ਜਾਣ ਤਾਂ ਪਹਿਲਾਂ ਜਾਣ ਦਾ ਹੱਕ ਕਿਸਨੂੰ ਹੈ?",opts:["ਜੋ ਤੇਜ਼ੀ ਨਾਲ ਚਲਦੀ ਹੈ","ਖੱਬੇ ਪਾਸੇ ਤੋਂ ਆਉਣ ਵਾਲੀ","ਸੱਜੇ ਪਾਸੇ ਤੋਂ ਆਉਣ ਵਾਲੀ","ਵੱਡੀ ਗੱਡੀ ਨੂੰ"],ans:2,exp:"ਜਿੱਥੇ ਕੋਈ ਚਿੰਨ੍ਹ ਨਾ ਹੋਵੇ, ਸੱਜੇ ਪਾਸੇ ਤੋਂ ਆਉਣ ਵਾਲੀ ਗੱਡੀ ਨੂੰ ਰਸਤਾ ਦਿਓ।"},
+  {id:"pr3",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਫਾਇਰ ਹਾਈਡਰੈਂਟ ਤੋਂ ਗੱਡੀ ਕਿੰਨੀ ਦੂਰ ਖੜ੍ਹੀ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ?",opts:["1.5 ਮੀਟਰ (5 ਫੁੱਟ)","3 ਮੀਟਰ (10 ਫੁੱਟ)","5 ਮੀਟਰ (15 ਫੁੱਟ)","10 ਮੀਟਰ (30 ਫੁੱਟ)"],ans:1,exp:"ਫਾਇਰ ਹਾਈਡਰੈਂਟ ਤੋਂ 3 ਮੀਟਰ (10 ਫੁੱਟ) ਦੇ ਅੰਦਰ ਗੱਡੀ ਖੜ੍ਹੀ ਨਾ ਕਰੋ।"},
+  {id:"pr4",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਅੱਗੇ ਜਾ ਰਹੀ ਗੱਡੀ ਤੋਂ ਸੁਰੱਖਿਅਤ ਦੂਰੀ ਕਿੰਨੀ ਰੱਖਣੀ ਚਾਹੀਦੀ ਹੈ?",opts:["1 ਸਕਿੰਟ","2 ਸਕਿੰਟ","3 ਸਕਿੰਟ","4 ਸਕਿੰਟ"],ans:1,exp:"ਘੱਟੋ-ਘੱਟ 2 ਸਕਿੰਟ ਦੀ ਦੂਰੀ ਰੱਖੋ; ਮਾੜੇ ਮੌਸਮ ਵਿੱਚ ਵੱਧ।"},
+  {id:"pr5",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਦੋਰਾਹੇ ਤੇ ਚਲਦੇ ਜੇ ਤੁਸੀਂ ਸੰਕਟ ਬਹਨ ਦੀ ਆਵਾਜ਼ ਸੁਣੋ ਤਾਂ ਕਾਨੂੰਨ ਦੇ ਅਨੁਸਾਰ ਤੁਹਾਨੂੰ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਤੇਜ਼ ਕਰਕੇ ਗੱਡੀ ਇੱਕ ਪਾਸੇ ਕਰ ਦੇਵੋ","ਇਸ਼ਾਰਾ ਦੇਵੋ ਡਰਾਈਵਰ ਨੂੰ ਪਾਸ ਕਰਨ ਲਈ","ਗੱਡੀ ਸੱਜੇ ਪਾਸੇ ਲਿਜਾ ਕੇ ਰੋਕ ਲਓ","ਉਤਨੀ ਹੀ ਰਫ਼ਤਾਰ ਨਾਲ ਅੱਗੇ ਵੱਧੋ"],ans:2,exp:"ਜਦੋਂ ਐਮਰਜੈਂਸੀ ਵਾਹਨ ਆਵੇ, ਗੱਡੀ ਸੱਜੇ ਪਾਸੇ ਲਿਜਾ ਕੇ ਰੋਕੋ।"},
+  {id:"pr6",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੋਂ ਬੱਤੀ ਬਦਲ ਜਾਵੇ ਪਰ ਪਦਯਾਤਰੀ ਅਜੇ ਰਸਤਾ ਪਾਰ ਕਰ ਰਿਹਾ ਹੋਵੇ ਤਾਂ ਕਿਸਦਾ ਹੱਕ ਹੁੰਦਾ ਹੈ?",opts:["ਮੁੜਨ ਵਾਲੀ ਗੱਡੀ ਦਾ","ਖੱਬੇ ਪਾਸੇ ਤੋਂ ਆਉਣ ਵਾਲੀ ਗੱਡੀ ਦਾ","ਸੱਜੇ ਪਾਸੇ ਤੋਂ ਆਉਣ ਵਾਲੀ ਗੱਡੀ ਦਾ","ਪਦਯਾਤਰੀਆਂ ਦਾ"],ans:3,exp:"ਨਿਸ਼ਾਨੀ ਕੀਤੀ ਕਰਾਸਿੰਗ ਵਿੱਚ ਪਦਯਾਤਰੀਆਂ ਦਾ ਹਮੇਸ਼ਾਂ ਹੱਕ ਹੁੰਦਾ ਹੈ।"},
+  {id:"pr7",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੇ ਵੀ ਟ੍ਰੈਫਿਕ ਵਿੱਚ ਲੇਨ ਬਦਲਣ ਤੋਂ ਪਹਿਲਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਹਾਰਨ ਵਜਾਓ ਅਤੇ ਪਿੱਛੇ ਦੇਖੋ","ਸਿਰਫ਼ ਪਿੱਛੇ ਵੇਖਣ ਵਾਲੇ ਸ਼ੀਸ਼ੇ ਵਿੱਚ ਵੇਖੋ","ਸਹੀ ਇਸ਼ਾਰਾ ਕਰੋ ਅਤੇ ਲੇਨ ਬਦਲਣ ਤੋਂ ਪਹਿਲਾਂ ਦੇਖੋ ਕਿ ਇਹ ਸੁਰੱਖਿਅਤ ਹੈ","ਹੌਲੀ ਕਰੋ ਅਤੇ ਸਹੀ ਇਸ਼ਾਰਾ ਕਰੋ"],ans:2,exp:"ਹਮੇਸ਼ਾਂ ਇਸ਼ਾਰਾ ਦਿਓ ਅਤੇ ਸਾਰੇ ਸ਼ੀਸ਼ੇ ਅਤੇ ਅੰਨ੍ਹੇ ਥਾਂ ਜਾਂਚੋ।"},
+  {id:"pr8",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਪੁਲਿਸ ਅਫਸਰ ਗੱਡੀ ਦੇ ਡਰਾਈਵਰ ਕੋਲੋਂ ਕਿਹੜੇ ਕਾਗਜ਼ਾਤ ਮੰਗ ਸਕਦਾ ਹੈ?",opts:["ਬੀਮਾ ਪਤੱਰ","ਮਾਲਕ ਪੱਤਰ","ਚਾਲਕ ਲਾਈਸੈਂਸ","ਉਪਰ ਵਾਲੇ ਸਾਰੇ ਕਾਗਜ਼ਾਤ"],ans:3,exp:"ਪੁਲਿਸ ਬੀਮਾ ਕਾਰਡ, ਵਾਹਨ ਮਾਲਕੀ ਅਤੇ ਡਰਾਈਵਰ ਲਾਈਸੈਂਸ ਮੰਗ ਸਕਦੀ ਹੈ — ਤਿੰਨੇ ਹਮੇਸ਼ਾਂ ਨਾਲ ਰੱਖੋ।"},
+  {id:"pr9",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਰੁਕਣ ਦੇ ਚਿੰਨ੍ਹ ਤੇ ਡਰਾਈਵਰ ਨੂੰ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਹੌਲੀ ਕਰੋ, ਹਾਰਨ ਵਜਾਓ, ਫਿਰ ਅੱਗੇ ਵਧੋ","ਹੌਲੀ ਕਰੋ, ਜੇ ਸਾਫ਼ ਹੈ ਅੱਗੇ ਵਧੋ","ਰੁਕੋ, ਹਾਰਨ ਵਜਾਓ, ਫਿਰ ਅੱਗੇ ਵਧੋ","ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੁਕੋ, ਫਿਰ ਸੁਰੱਖਿਅਤ ਹੋਣ ਤੇ ਅੱਗੇ ਵਧੋ"],ans:3,exp:"ਰੁਕਣ ਦੇ ਚਿੰਨ੍ਹ ਤੇ ਪੂਰੀ ਤਰ੍ਹਾਂ ਰੁਕੋ, ਫਿਰ ਸੁਰੱਖਿਅਤ ਹੋਣ ਤੇ ਅੱਗੇ ਵਧੋ।"},
+  {id:"pr10",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੋਂ ਚੌਕ ਵਿੱਚ ਲਾਲ ਬੱਤੀਆਂ ਹੋਣ ਅਤੇ ਤੁਸੀਂ ਸਿੱਧੇ ਜਾਣਾ ਹੋਵੇ ਤਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਰੁਕੋ, ਚੱਲਣ ਵਾਲਿਆਂ ਨੂੰ ਰਸਤਾ ਦੇਵੋ ਫਿਰ ਧਿਆਨ ਨਾਲ ਲੰਘੋ","ਰੁਕੋ, ਅਗਰ ਰਸਤਾ ਸਾਫ਼ ਹੈ ਤਾਂ ਲੰਘ ਜਾਵੋ","ਹੌਲੀ ਹੋਵੋ ਅਗਰ ਰਸਤਾ ਸਾਫ਼ ਹੈ ਤਾਂ ਲੰਘ ਜਾਵੋ","ਖੜ੍ਹੋ, ਜਦੋਂ ਬੱਤੀਆਂ ਹਰੀਆਂ ਹੋ ਜਾਣ ਅਤੇ ਰਸਤਾ ਸਾਫ਼ ਹੋਵੇ ਤਾਂ ਅੱਗੇ ਲੰਘੋ"],ans:3,exp:"ਲਾਲ ਬੱਤੀ ਤੇ ਰੁਕੋ ਅਤੇ ਹਰੀ ਬੱਤੀ ਦੀ ਉਡੀਕ ਕਰੋ।"},
+  {id:"pr11",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਯੀਲਡ ਚਿੰਨ੍ਹ ਤੇ ਕਾਨੂੰਨ ਤੁਹਾਨੂੰ ਕੀ ਕਰਨ ਲਈ ਕਹਿੰਦਾ ਹੈ?",opts:["ਉਸ ਰਫ਼ਤਾਰ ਤੇ ਜਾਓ ਅਤੇ ਸੱਜੇ ਖੱਬੇ ਦੇਖੋ","ਰੁਕੋ, ਜਲਦੀ ਨਾਲ ਚੌਕ ਵਿੱਚ ਦਾਖ਼ਲ ਹੋਵੋ","ਹੌਲੀ ਕਰੋ, ਲੋੜ ਪਏ ਰੁਕੋ ਅਤੇ ਰਸਤਾ ਦਿਓ","ਸਿਰਫ਼ ਉਸ ਵੇਲੇ ਦਾਖ਼ਲ ਹੋਵੋ ਜਦੋਂ ਰਸਤਾ ਸੁਰੱਖਿਅਤ ਹੋਵੇ"],ans:2,exp:"ਯੀਲਡ ਚਿੰਨ੍ਹ ਤੇ: ਹੌਲੀ ਕਰੋ, ਲੋੜ ਪਏ ਰੁਕੋ, ਰਸਤਾ ਦਿਓ।"},
+  {id:"pr12",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਦੋਵੇਂ ਪਾਸੇ ਟ੍ਰੈਫਿਕ ਵਾਲੀ ਸੜਕ ਤੋਂ ਖੱਬੇ ਮੁੜਨ ਤੋਂ ਪਹਿਲਾਂ ਗੱਡੀ ਕਿੱਥੇ ਰੱਖਣੀ ਚਾਹੀਦੀ ਹੈ?",opts:["ਸੱਜੇ ਪਾਸੇ","ਸੜਕ ਦੀ ਵਿਚਕਾਰਲੀ ਲਾਈਨ ਦੇ ਬਿਲਕੁਲ ਸੱਜੇ ਪਾਸੇ","ਖੱਬੇ ਪਾਸੇ","ਕੋਈ ਫ਼ਰਕ ਨਹੀਂ ਜੇ ਇਸ਼ਾਰਾ ਚੱਲ ਰਿਹਾ ਹੈ"],ans:1,exp:"ਖੱਬੇ ਮੁੜਨ ਤੋਂ ਪਹਿਲਾਂ ਗੱਡੀ ਨੂੰ ਵਿਚਕਾਰਲੀ ਲਾਈਨ ਦੇ ਬਿਲਕੁਲ ਸੱਜੇ ਪਾਸੇ ਰੱਖੋ।"},
+  {id:"pr13",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੋਂ ਧੁੰਦ ਵਿੱਚ ਗੱਡੀ ਚਲਾਓ ਤਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਤੇਜ਼ ਬੱਤੀਆਂ ਜਗਾਓ","ਮੱਧਮ ਬੱਤੀਆਂ ਜਗਾਓ","ਸਿਰਫ਼ ਪਾਰਕਿੰਗ ਬੱਤੀਆਂ","ਕੋਈ ਬੱਤੀਆਂ ਨਹੀਂ"],ans:1,exp:"ਭਾਰੀ ਧੁੰਦ ਵਿੱਚ ਮੱਧਮ ਬੱਤੀਆਂ ਵਰਤੋ — ਤੇਜ਼ ਬੱਤੀਆਂ ਧੁੰਦ ਤੋਂ ਪਰਤਦੀਆਂ ਹਨ।"},
+  {id:"pr14",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਤੁਹਾਡੇ ਖੂਨ ਵਿੱਚ ਸ਼ਰਾਬ ਦੀ ਮਾਤਰਾ ਕਿੰਨੀ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ ਕਿ ਕਾਨੂੰਨ ਅਨੁਸਾਰ ਤੁਸੀਂ ਨਸ਼ੇ ਦੀ ਹਾਲਤ ਵਿੱਚ ਸਮਝੇ ਜਾਂਦੇ ਹੋ?",opts:["0.03%","0.05%","0.08%","1.0%"],ans:2,exp:"ਓਂਟੇਰੀਓ ਵਿੱਚ 0.08% ਜਾਂ ਇਸ ਤੋਂ ਵੱਧ BAC ਨਸ਼ੇ ਦੇ ਅਧੀਨ ਡਰਾਈਵਿੰਗ ਦਾ ਅਪਰਾਧਿਕ ਪੱਧਰ ਹੈ।"},
+  {id:"pr15",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਅਗਰ ਤੁਹਾਡੇ ਕੋਲ G1 ਜਾਂ G2 ਲਾਈਸੈਂਸ ਹੈ ਤਾਂ ਤੁਹਾਡੇ ਖੂਨ ਵਿੱਚ ਸ਼ਰਾਬ ਦੀ ਵੱਧ ਤੋਂ ਵੱਧ ਮਾਤਰਾ ਕਿੰਨੀ ਹੋ ਸਕਦੀ ਹੈ?",opts:["0.05%","0.08%","0.00%","0.03%"],ans:2,exp:"G1 ਅਤੇ G2 ਨਵੇਂ ਡਰਾਈਵਰਾਂ ਲਈ ਖੂਨ ਵਿੱਚ ਸ਼ਰਾਬ ਦੀ ਮਾਤਰਾ ਬਿਲਕੁਲ ਜ਼ੀਰੋ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ।"},
+  {id:"pr16",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਅਗਰ ਪੁਲਿਸ ਦੇ ਮੰਗੇ ਜਾਣ ਤੇ ਬ੍ਰੈਥਲਾਈਜ਼ਰ ਟੈਸਟ ਤੋਂ ਮਨਾਂਹ ਕਰ ਦਿਓ ਤਾਂ ਲਾਈਸੈਂਸ ਕਿੰਨੇ ਸਮੇਂ ਲਈ ਮੁਅੱਤਲ ਹੋਵੇਗਾ?",opts:["30 ਦਿਨਾਂ ਲਈ","60 ਦਿਨਾਂ ਲਈ","1 ਸਾਲ ਲਈ","90 ਦਿਨਾਂ ਲਈ"],ans:3,exp:"ਬ੍ਰੈਥਲਾਈਜ਼ਰ ਟੈਸਟ ਤੋਂ ਮਨਾਂਹ ਕਰਨ ਤੇ ਤੁਰੰਤ 90 ਦਿਨਾਂ ਦਾ ਲਾਈਸੈਂਸ ਮੁਅੱਤਲੀ ਹੁੰਦੀ ਹੈ।"},
+  {id:"pr17",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"G1 ਡਰਾਈਵਰ ਦੇ ਨਾਲ ਬੈਠੇ ਡਰਾਈਵਰ ਕੋਲ ਘੱਟੋ-ਘੱਟ ਕਿੰਨੇ ਸਾਲ ਦਾ ਤਜਰਬਾ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ?",opts:["1 ਸਾਲ","2 ਸਾਲ","4 ਸਾਲ","6 ਸਾਲ"],ans:2,exp:"G1 ਦੇ ਨਾਲ ਬੈਠਣ ਵਾਲੇ ਡਰਾਈਵਰ ਕੋਲ ਘੱਟੋ-ਘੱਟ 4 ਸਾਲ ਦਾ ਤਜਰਬਾ ਹੋਣਾ ਜ਼ਰੂਰੀ ਹੈ।"},
+  {id:"pr18",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"G1 ਡਰਾਈਵਰਾਂ ਨੂੰ ਕਿਸ ਸਮੇਂ ਗੱਡੀ ਚਲਾਉਣ ਦੀ ਮਨਾਂਹ ਹੈ?",opts:["ਰਾਤ 10 ਵਜੇ ਤੋਂ ਸਵੇਰੇ 5 ਵਜੇ ਤੱਕ","ਰਾਤ 11 ਵਜੇ ਤੋਂ ਸਵੇਰੇ 6 ਵਜੇ ਤੱਕ","ਅੱਧੀ ਰਾਤ ਤੋਂ ਲੈ ਕੇ ਸਵੇਰੇ 5 ਵਜੇ ਤੱਕ","ਰਾਤ 9 ਵਜੇ ਤੋਂ ਸਵੇਰੇ 6 ਵਜੇ ਤੱਕ"],ans:2,exp:"G1 ਡਰਾਈਵਰਾਂ ਨੂੰ ਅੱਧੀ ਰਾਤ ਤੋਂ ਸਵੇਰੇ 5:00 ਵਜੇ ਤੱਕ ਗੱਡੀ ਚਲਾਉਣ ਦੀ ਮਨਾਂਹ ਹੈ।"},
+  {id:"pr19",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਓਂਟੇਰੀਓ ਦੇ ਗ੍ਰੈਜੂਏਟਿਡ ਲਾਈਸੈਂਸਿੰਗ ਸਿਸਟਮ ਨੂੰ ਪੂਰਾ ਕਰਨ ਵਿੱਚ ਘੱਟੋ-ਘੱਟ ਕਿੰਨਾ ਸਮਾਂ ਲੱਗਦਾ ਹੈ?",opts:["12 ਮਹੀਨੇ","18 ਮਹੀਨੇ","20 ਮਹੀਨੇ","24 ਮਹੀਨੇ"],ans:2,exp:"ਗ੍ਰੈਜੂਏਟਿਡ ਲਾਈਸੈਂਸਿੰਗ ਸਿਸਟਮ ਨੂੰ ਘੱਟੋ-ਘੱਟ 20 ਮਹੀਨੇ ਲੱਗਦੇ ਹਨ।"},
+  {id:"pr20",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਅਗਰ ਤੁਹਾਡੇ ਕੋਲ G1 ਜਾਂ G2 ਲਾਈਸੈਂਸ ਹੈ ਅਤੇ 9 ਜਾਂ ਇਸਤੋਂ ਜ਼ਿਆਦਾ ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਹੋ ਜਾਣ ਤਾਂ ਕਿੰਨੇ ਸਮੇਂ ਲਈ ਲਾਈਸੈਂਸ ਮੁਅੱਤਲ ਹੋਵੇਗਾ?",opts:["60 ਦਿਨ","30 ਦਿਨ","15 ਦਿਨ","1 ਸਾਲ"],ans:1,exp:"G1 ਅਤੇ G2 ਡਰਾਈਵਰਾਂ ਨੂੰ 9 ਜਾਂ ਵੱਧ ਮਨਫ਼ੀ ਪੁਆਇੰਟਾਂ ਲਈ 30 ਦਿਨਾਂ ਦਾ ਲਾਈਸੈਂਸ ਮੁਅੱਤਲੀ ਮਿਲਦੀ ਹੈ।"},
+  {id:"pr21",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਸਕੂਲ ਬੱਸ ਲਈ ਨਾ ਰੁਕਣ ਤੇ ਕਿੰਨੇ ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਮਿਲਦੇ ਹਨ?",opts:["2 ਪੁਆਇੰਟ","4 ਪੁਆਇੰਟ","6 ਪੁਆਇੰਟ","7 ਪੁਆਇੰਟ"],ans:2,exp:"ਸਕੂਲ ਬੱਸ ਲਈ ਨਾ ਰੁਕਣ ਤੇ 6 ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਅਤੇ $1,000 ਤੱਕ ਜੁਰਮਾਨਾ ਮਿਲਦਾ ਹੈ।"},
+  {id:"pr22",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"15 ਮਨਫ਼ੀ ਪੁਆਇੰਟਾਂ ਤੇ ਲਾਈਸੈਂਸ ਆਪਣੇ ਆਪ ਕਿੰਨੇ ਸਮੇਂ ਲਈ ਮੁਅੱਤਲ ਹੋ ਜਾਂਦਾ ਹੈ?",opts:["30 ਦਿਨ","60 ਦਿਨ","90 ਦਿਨ","3 ਮਹੀਨੇ"],ans:0,exp:"15 ਮਨਫ਼ੀ ਪੁਆਇੰਟਾਂ ਤੇ ਲਾਈਸੈਂਸ ਆਪਣੇ ਆਪ 30 ਦਿਨਾਂ ਲਈ ਮੁਅੱਤਲ ਹੋ ਜਾਂਦਾ ਹੈ।"},
+  {id:"pr23",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਤੁਹਾਡੇ ਡਰਾਈਵਿੰਗ ਰਿਕਾਰਡ ਤੇ ਕਿੰਨੇ ਸਮੇਂ ਲਈ ਰਹਿੰਦੇ ਹਨ?",opts:["ਅਪਰਾਧ ਦੀ ਮਿਤੀ ਤੋਂ 1 ਸਾਲ","ਅਪਰਾਧ ਦੀ ਮਿਤੀ ਤੋਂ 2 ਸਾਲ","ਅਪਰਾਧ ਦੀ ਮਿਤੀ ਤੋਂ 3 ਸਾਲ","ਅਪਰਾਧ ਦੀ ਮਿਤੀ ਤੋਂ 5 ਸਾਲ"],ans:1,exp:"ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਅਪਰਾਧ ਦੀ ਮਿਤੀ ਤੋਂ 2 ਸਾਲ ਤੱਕ ਰਿਕਾਰਡ ਤੇ ਰਹਿੰਦੇ ਹਨ।"},
+  {id:"pr24",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਬੇਧਿਆਨੀ (ਕੇਅਰਲੈੱਸ) ਡਰਾਈਵਿੰਗ ਲਈ ਕਿੰਨੇ ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਮਿਲਦੇ ਹਨ?",opts:["3 ਪੁਆਇੰਟ","4 ਪੁਆਇੰਟ","6 ਪੁਆਇੰਟ","7 ਪੁਆਇੰਟ"],ans:2,exp:"ਬੇਧਿਆਨੀ ਡਰਾਈਵਿੰਗ ਲਈ 6 ਮਨਫ਼ੀ ਪੁਆਇੰਟ ਮਿਲਦੇ ਹਨ।"},
+  {id:"pr25",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੋਂ ਬੱਸ ਤੋਂ ਮੁਸਾਫ਼ਰ ਚੜ੍ਹਦੇ ਉਤਰਦੇ ਹੋਣ (ਸੁਰੱਖਿਆ ਜਗ੍ਹਾ ਨਾ ਹੋਵੇ), ਅੱਗੇ ਨਿਕਲਣ ਤੋਂ ਪਹਿਲਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਬੱਸ ਦੇ ਪਿੱਛੇ ਰੁਕੋ ਅਤੇ ਬਾਅਦ ਵਿੱਚ ਜਾਓ","ਹਾਰਨ ਵਜਾ ਕੇ ਸੁਰੱਖਿਆ ਨਾਲ ਅੱਗੇ ਵੱਧੋ","ਖੱਬੇ ਪਾਸੇ ਦਾ ਰਸਤਾ ਖਾਲੀ ਹੋਵੇ ਤਾਂ ਅੱਗੇ ਚਲੇ ਜਾਓ","ਜਿਸ ਪਾਸਿਓਂ ਮੁਸਾਫ਼ਰ ਚੜ੍ਹਦੇ ਉਤਰਦੇ ਹਨ ਉਸ ਪਾਸੇ ਵੱਲ 2 ਮੀਟਰ ਪਿੱਛੇ ਖੜੋ ਅਤੇ ਸੁਰੱਖਿਅਤ ਹੋਣ ਤੇ ਅੱਗੇ ਵੱਧੋ"],ans:3,exp:"ਬੱਸ ਦੇ ਪਿੱਛੇ ਘੱਟੋ-ਘੱਟ 2 ਮੀਟਰ ਰੁਕੋ ਅਤੇ ਸੁਰੱਖਿਅਤ ਹੋਣ ਤੇ ਹੀ ਅੱਗੇ ਵਧੋ।"},
+  {id:"pr26",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਓਂਟੇਰੀਓ ਦੇ ਸੂਬਾਈ ਹਾਈਵੇ ਤੇ ਵੱਧ ਤੋਂ ਵੱਧ ਰਫ਼ਤਾਰ ਕਿੰਨੀ ਹੋਣੀ ਚਾਹੀਦੀ ਹੈ (ਜੇ ਹੋਰ ਚਿੰਨ੍ਹ ਨਾ ਹੋਵੇ)?",opts:["80 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ","90 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ","100 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ","110 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ"],ans:2,exp:"ਓਂਟੇਰੀਓ ਹਾਈਵੇ ਤੇ ਡਿਫਾਲਟ ਵੱਧ ਤੋਂ ਵੱਧ ਰਫ਼ਤਾਰ 100 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ ਹੈ।"},
+  {id:"pr27",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਸ਼ਹਿਰ ਜਾਂ ਪਿੰਡ ਵਿੱਚ ਰਫ਼ਤਾਰ ਦਾ ਚਿੰਨ੍ਹ ਨਾ ਲਗਿਆ ਹੋਵੇ ਤਾਂ ਵੱਧ ਤੋਂ ਵੱਧ ਰਫ਼ਤਾਰ ਕਿੰਨੀ ਹੈ?",opts:["40 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ","50 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ","60 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ","70 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ"],ans:1,exp:"ਸ਼ਹਿਰੀ ਏਰੀਏ ਵਿੱਚ ਡਿਫਾਲਟ ਰਫ਼ਤਾਰ ਦੀ ਹੱਦ 50 ਕਿਲੋਮੀਟਰ/ਘੰਟਾ ਹੈ।"},
+  {id:"pr28",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਗਿੱਲੀ ਜਾਂ ਬਰਫ਼ ਵਾਲੀ ਸੜਕ ਤੇ ਛੇਤੀ ਤੋਂ ਛੇਤੀ ਰੋਕਣ ਦਾ ਵਧੀਆ ਤਰੀਕਾ ਕੀ ਹੈ?",opts:["ਬਰੇਕ ਛੱਡ ਛੱਡ ਕੇ ਲਾਉਣ ਨਾਲ ਜਦੋਂ ਤੱਕ ਗੱਡੀ ਨਾ ਰੁਕ ਜਾਵੇ","ਬਰੇਕ ਤੋਂ ਪੈਰ ਪਰੇ ਰੱਖੋ ਅਤੇ ਆਪਣੇ ਆਪ ਗੱਡੀ ਰੁਕਣ ਦਿਓ","ਜ਼ੋਰ ਦੀ ਬਰੇਕ ਲਗਾਓ ਅਤੇ ਗੱਡੀ ਨੂੰ ਤਿਲਕਣ ਤੋਂ ਬਚਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ","ਹਮੇਸ਼ਾ ਦੀ ਤਰ੍ਹਾਂ ਬਰੇਕ ਲਗਾਓ"],ans:0,exp:"ਗਿੱਲੀ ਜਾਂ ਬਰਫ਼ ਵਾਲੀ ਸੜਕ ਤੇ ਬਰੇਕ ਪੈਡਲ ਛੱਡ ਛੱਡ ਕੇ ਲਾਓ।"},
+  {id:"pr29",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਹਾਈਵੇ ਵਿੱਚ ਦਾਖ਼ਲ ਹੋਣ ਵੇਲੇ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਰਫ਼ਤਾਰ ਵਧਾਉਣ ਵਾਲੀ ਲੇਨ ਵਿੱਚ ਖੜੋ ਅਤੇ ਰਸਤਾ ਮਿਲਣ ਦੀ ਉਡੀਕ ਕਰੋ","ਜਲਦੀ ਨਾਲ ਹਾਈਵੇ ਦੀ ਰਫ਼ਤਾਰ ਤੱਕ ਗੱਡੀ ਦੀ ਸਪੀਡ ਬਣਾਓ ਅਤੇ ਫਿਰ ਟ੍ਰੈਫਿਕ ਵਿੱਚ ਵੜ੍ਹ ਜਾਓ","ਹੌਲੀ ਹੋਵੋ ਅਤੇ ਇਕਦਮ ਹਾਈਵੇ ਤੇ ਚੜ੍ਹ ਜਾਵੋ","ਗੱਡੀ ਹੌਲੀ ਚਲਾਓ ਅਤੇ ਰੁਕਣ ਲਈ ਤਿਆਰ ਰਹੋ"],ans:1,exp:"ਰੈਂਪ ਤੇ ਹਾਈਵੇ ਦੀ ਰਫ਼ਤਾਰ ਤੱਕ ਤੇਜ਼ ਕਰੋ, ਫਿਰ ਸੁਚੱਜੇ ਢੰਗ ਨਾਲ ਟ੍ਰੈਫਿਕ ਵਿੱਚ ਰਲ ਜਾਓ।"},
+  {id:"pr30",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜੇ ਤੁਸੀਂ ਐਕਸਪ੍ਰੈੱਸਵੇ ਦਾ ਐਗਜ਼ਿਟ ਖੁੰਝ ਜਾਓ ਤਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਮੋਢੇ ਤੇ ਰੁਕੋ ਅਤੇ ਨਕਸ਼ਾ ਦੇਖੋ","ਜੇ ਕੋਈ ਗੱਡੀ ਨਹੀਂ ਤਾਂ ਪਿੱਛੇ ਹੱਟੋ","ਸਿੱਧੇ ਜਾਓ ਅਤੇ ਅਗਲੇ ਐਗਜ਼ਿਟ ਤੇ ਨਿਕਲੋ","ਯੂ-ਟਰਨ ਮਾਰੋ"],ans:2,exp:"ਕਦੇ ਐਕਸਪ੍ਰੈੱਸਵੇ ਤੇ ਨਾ ਰੁਕੋ ਜਾਂ ਪਿੱਛੇ ਨਾ ਹੱਟੋ। ਅਗਲੇ ਐਗਜ਼ਿਟ ਤੇ ਜਾਓ।"},
+  {id:"pr31",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਓਂਟੇਰੀਓ ਵਿੱਚ ਕੀ ਸੀਟ ਬੈਲਟ ਦਾ ਕਾਨੂੰਨ ਹੈ?",opts:["ਹਾਂ — ਸਾਰਿਆਂ ਨੂੰ ਸੀਟ ਬੈਲਟ ਲਾਉਣੀ ਜ਼ਰੂਰੀ ਹੈ","ਨਹੀਂ","ਸਿਰਫ਼ ਖੁੱਲੇ ਹਾਈਵੇ ਤੇ","ਸਿਰਫ਼ ਸ਼ਹਿਰ ਵਿੱਚ"],ans:0,exp:"ਓਂਟੇਰੀਓ ਦੇ ਕਾਨੂੰਨ ਅਨੁਸਾਰ ਗੱਡੀ ਵਿੱਚ ਸਾਰਿਆਂ ਨੂੰ ਸੀਟ ਬੈਲਟ ਲਾਉਣੀ ਜ਼ਰੂਰੀ ਹੈ।"},
+  {id:"pr32",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੋਂ ਰਾਤ ਵੇਲੇ ਹਾਈਵੇ ਤੇ ਕਾਰ ਚਲਾਉਂਦੇ ਹੋ ਤਾਂ ਮੱਧਮ ਲਾਈਟਾਂ ਜਗਾਉਣੀਆਂ ਹਨ। ਜਦੋਂ:",opts:["ਤੁਹਾਡੇ ਸਾਹਮਣੇ ਤੋਂ ਗੱਡੀ ਆ ਰਹੀ ਹੋਵੇ ਜਾਂ ਤੁਸੀਂ ਗੱਡੀ ਦੇ ਪਿੱਛੇ ਜਾਂਦੇ ਹੋ","ਜਾਂ ਫਿਰ ਸਾਹਮਣੇ ਆ ਰਹੀ ਗੱਡੀ ਦੀਆਂ ਲਾਈਟਾਂ ਕਾਰਨ ਘੱਟ ਦਿਸਦਾ ਹੋਵੇ","ਜਾਂ ਫਿਰ ਕਿਸੇ ਚੌਰਸੇ ਨੇੜੇ ਜਾ ਰਹੇ ਹੋਵੋ","ਜਾਂ ਫਿਰ ਜਦੋਂ ਦੂਸਰਾ ਡਰਾਈਵਰ ਆਪਣੀਆਂ ਲਾਈਟਾਂ ਮੱਧਮ ਕਰ ਲਵੇ"],ans:0,exp:"ਜਦੋਂ ਕੋਈ ਗੱਡੀ ਸਾਹਮਣੇ ਤੋਂ ਆਵੇ ਜਾਂ ਤੁਸੀਂ ਕਿਸੇ ਗੱਡੀ ਦੇ ਪਿੱਛੇ ਜਾ ਰਹੇ ਹੋਵੋ ਤਾਂ ਮੱਧਮ ਲਾਈਟਾਂ ਵਰਤੋ।"},
+  {id:"pr33",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਕਿਸੇ ਵੀ ਦੁਰਘਟਨਾ ਜਿਸ ਵਿੱਚ ਕੋਈ ਜ਼ਖ਼ਮੀ ਹੋਵੇ ਤਾਂ ਕੀ ਕਰਨਾ ਚਾਹੀਦਾ ਹੈ?",opts:["ਨੇੜੇ ਦੇ ਥਾਣੇ ਵਿੱਚ ਜਲਦੀ ਤੋਂ ਜਲਦੀ ਰਿਪੋਰਟ ਲਿਖਵਾਓ","48 ਘੰਟਿਆਂ ਦੇ ਵਿੱਚ ਰਿਪੋਰਟ ਲਿਖਵਾਓ","ਸਿਰਫ਼ ਆਪਣੀ ਬੀਮਾ ਕੰਪਨੀ ਨੂੰ ਰਿਪੋਰਟ ਕਰਵਾਓ","ਸਿਰਫ਼ ਟਰਾਂਸਪੋਰਟ ਮਹਿਕਮੇ ਨੂੰ ਰਿਪੋਰਟ ਕਰੋ"],ans:0,exp:"ਕਿਸੇ ਦੇ ਜ਼ਖ਼ਮੀ ਹੋਣ ਵਾਲੀ ਦੁਰਘਟਨਾ ਦੀ ਰਿਪੋਰਟ ਤੁਰੰਤ ਨੇੜੇ ਦੀ ਪੁਲਿਸ ਨੂੰ ਕਰੋ।"},
+  {id:"pr34",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਰਾਤ ਵੇਲੇ ਹਾਈਵੇ ਤੇ ਟਰੱਕ ਖਰਾਬ ਹੋ ਜਾਵੇ ਤਾਂ ਅੱਗੇ ਤੇ ਪਿੱਛੇ ਕਿੰਨੀ ਦੂਰੀ ਤੇ ਚਮਕਣ ਵਾਲੀਆਂ ਚੀਜ਼ਾਂ ਰੱਖਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ?",opts:["15 ਮੀਟਰ (50 ਫੁੱਟ)","30 ਮੀਟਰ (100 ਫੁੱਟ)","60 ਮੀਟਰ (200 ਫੁੱਟ)","90 ਮੀਟਰ (300 ਫੁੱਟ)"],ans:1,exp:"ਅੱਗੇ ਤੇ ਪਿੱਛੇ ਲਗਭਗ 30 ਮੀਟਰ (100 ਫੁੱਟ) ਦੀ ਦੂਰੀ ਤੇ ਚਮਕਣ ਵਾਲੀਆਂ ਚੀਜ਼ਾਂ ਰੱਖਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ।"},
+  {id:"pr35",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਰੇਲਵੇ ਕਰਾਸਿੰਗ ਤੇ ਚੇਤਾਵਨੀ ਦੇਣ ਵਾਲਾ ਯੰਤਰ ਕੰਮ ਕਰ ਰਿਹਾ ਹੋਵੇ ਤਾਂ ਕਿੰਨੀ ਦੂਰੀ ਤੇ ਰੁਕਣਾ ਜ਼ਰੂਰੀ ਹੈ?",opts:["ਨੇੜੇ ਦੀ ਪੱਟੜੀ ਤੋਂ 1.5 ਮੀਟਰ ਘੱਟ ਨਹੀਂ","ਰਫ਼ਤਾਰ ਵਧਾਓ ਅਤੇ ਜਲਦੀ ਪਾਰ ਕਰੋ","ਨੇੜੇ ਦੀ ਪੱਟੜੀ ਤੋਂ 5 ਮੀਟਰ ਘੱਟ ਨਹੀਂ","ਹੌਲੀ ਕਰੋ ਅਤੇ ਧਿਆਨ ਨਾਲ ਅੱਗੇ ਵਧੋ"],ans:2,exp:"ਤੁਹਾਨੂੰ ਨੇੜੇ ਦੀ ਪੱਟੜੀ ਤੋਂ ਘੱਟੋ-ਘੱਟ 5 ਮੀਟਰ (15 ਫੁੱਟ) ਦੂਰ ਰੁਕਣਾ ਜ਼ਰੂਰੀ ਹੈ।"},
+  {id:"pr36",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਜਦੋਂ ਸਾਹਮਣੇ ਤੋਂ ਆਉਣ ਵਾਲੀ ਗੱਡੀ ਤੋਂ ਕਿੰਨੀ ਦੂਰੀ ਤੇ ਮੱਧਮ ਬੱਤੀਆਂ ਵਰਤਣੀਆਂ ਚਾਹੀਦੀਆਂ ਹਨ?",opts:["1 ਕਿਲੋਮੀਟਰ ਦੇ ਅੰਦਰ","150 ਮੀਟਰ (500 ਫੁੱਟ)","300 ਮੀਟਰ (1000 ਫੁੱਟ)","ਇਹ ਸਿਰਫ਼ ਸੁਰੱਖਿਆ ਅਭਿਆਸ ਹੈ, ਕਾਨੂੰਨ ਨਹੀਂ"],ans:1,exp:"ਸਾਹਮਣੇ ਤੋਂ ਆਉਣ ਵਾਲੀ ਗੱਡੀ ਤੋਂ 150 ਮੀਟਰ (500 ਫੁੱਟ) ਦੇ ਅੰਦਰ ਮੱਧਮ ਬੱਤੀਆਂ ਵੱਲ ਬਦਲੋ।"},
+  {id:"pr37",cat:"ਸੜਕ ਦੇ ਨਿਯਮ",sv:null,q:"ਅਗਰ ਤੁਸੀਂ ਪਹਿਲੀ ਵਾਰ ਨਸ਼ੇ ਦੀ ਹਾਲਤ ਵਿੱਚ ਗੱਡੀ ਚਲਾਉਂਦੇ ਫੜੇ ਜਾਂਦੇ ਹੋ ਤਾਂ ਤੁਹਾਡਾ ਲਾਈਸੈਂਸ ਕਿੰਨੇ ਸਮੇਂ ਲਈ ਮੁਅੱਤਲ ਹੋਵੇਗਾ?",opts:["ਇੱਕ ਮਹੀਨੇ ਲਈ","ਤਿੰਨ ਮਹੀਨੇ ਲਈ","ਛੇ ਮਹੀਨੇ ਲਈ","ਇੱਕ ਸਾਲ ਲਈ"],ans:3,exp:"ਪਹਿਲੀ ਵਾਰ ਸ਼ਰਾਬ ਪੀ ਕੇ ਗੱ�];
+
+// ========== QUESTION SETS ==========
+const SETS = [
+  {label:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ 1–18",  key:"s1", pool:ALL_SIGNS.slice(0,18)},
+  {label:"ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ 19–34", key:"s2", pool:ALL_SIGNS.slice(18)},
+  {label:"ਸੜਕ ਦੇ ਨਿਯਮ 1–20",    key:"r1", pool:ALL_RULES.slice(0,20)},
+  {label:"ਸੜਕ ਦੇ ਨਿਯਮ 21–38",   key:"r2", pool:ALL_RULES.slice(20)},
+];
+
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-0.5); }
+
+function pick(pool, n){
+  const s = shuffle(pool);
+  return s.slice(0, Math.min(n, s.length));
+}
+
+// ========== TIMER HOOK ==========
+function useTimer(active, onExpire){
+  const [sec, setSec] = React.useState(600);
+  React.useEffect(()=>{
+    if(!active){ setSec(600); return; }
+    if(sec<=0){ onExpire(); return; }
+    const t = setTimeout(()=>setSec(s=>s-1),1000);
+    return ()=>clearTimeout(t);
+  },[active,sec]);
+  return sec;
+}
+
+// ========== SIGN DISPLAY ==========
+function SignDisplay({sv}){
+  if(!sv||!S[sv]) return null;
+  return <div style={{display:'flex',justifyContent:'center',margin:'12px 0'}}>
+    {S[sv](90)}
+  </div>;
+}
+
+// ========== STYLES ==========
+const C = {
+  page:{ maxWidth:520, margin:'0 auto', padding:'16px 12px', minHeight:'100vh' },
+  card:{ background:'white', borderRadius:16, padding:'20px 18px', boxShadow:'0 2px 16px rgba(0,0,0,0.10)', marginBottom:16 },
+  logo:{ width:90, height:90, borderRadius:12, objectFit:'cover' },
+  h1:{ fontSize:22, fontWeight:900, color:'#0f4c81', margin:'10px 0 2px' },
+  sub:{ fontSize:13, color:'#64748b', marginBottom:4 },
+  notice:{ background:'#fff7ed', border:'1px solid #fed7aa', borderRadius:10, padding:'10px 14px', fontSize:12.5, color:'#9a3412', marginBottom:14, lineHeight:1.5 },
+  mainBtn:{ width:'100%', padding:'15px 10px', borderRadius:12, border:'none', fontSize:17, fontWeight:800, cursor:'pointer', marginBottom:10, transition:'all .15s' },
+  secBtn:{ width:'100%', padding:'12px 10px', borderRadius:10, border:'none', fontSize:15, fontWeight:700, cursor:'pointer', marginBottom:8, transition:'all .15s' },
+  timerOk:{ display:'inline-block', padding:'4px 14px', borderRadius:20, background:'#dcfce7', color:'#166534', fontWeight:700, fontSize:14 },
+  timerWarn:{ display:'inline-block', padding:'4px 14px', borderRadius:20, background:'#fee2e2', color:'#991b1b', fontWeight:700, fontSize:14 },
+  prog:{ background:'#e2e8f0', borderRadius:99, height:8, margin:'8px 0 14px' },
+  progFill:(pct)=>({ height:8, borderRadius:99, background:'linear-gradient(90deg,#2563eb,#06b6d4)', width:pct+'%', transition:'width .3s' }),
+  qText:{ fontSize:17, fontWeight:700, lineHeight:1.6, marginBottom:14, color:'#1e293b' },
+  optBtn:(st)=>({
+    width:'100%', textAlign:'left', padding:'13px 16px', borderRadius:10, border:'2px solid',
+    borderColor: st==='correct'?'#16a34a': st==='wrong'?'#dc2626': st==='reveal'?'#2563eb':'#e2e8f0',
+    background: st==='correct'?'#f0fdf4': st==='wrong'?'#fef2f2': st==='reveal'?'#eff6ff':'white',
+    color:'#1e293b', fontSize:15, fontWeight:600, cursor: st?'default':'pointer',
+    marginBottom:8, transition:'all .15s', lineHeight:1.5
+  }),
+  exp:{ background:'#f0f9ff', border:'1px solid #bae6fd', borderRadius:10, padding:'12px 14px', fontSize:13.5, color:'#0c4a6e', lineHeight:1.6, marginTop:10 },
+  catBadge:(c)=>({ display:'inline-block', padding:'3px 10px', borderRadius:99, fontSize:11, fontWeight:700,
+    background: c==='ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ'?'#eff6ff':'#f0fdf4',
+    color: c==='ਟ੍ਰੈਫਿਕ ਚਿੰਨ੍ਹ'?'#1d4ed8':'#166534', marginBottom:8 }),
+  passBox:{ background:'linear-gradient(135deg,#f0fdf4,#dcfce7)', border:'2px solid #16a34a', borderRadius:14, padding:'18px', textAlign:'center', marginBottom:14 },
+  failBox:{ background:'linear-gradient(135deg,#fff7ed,#fee2e2)', border:'2px solid #ef4444', borderRadius:14, padding:'18px', textAlign:'center', marginBottom:14 },
+  reviewItem:(ok)=>({ padding:'12px 14px', borderRadius:10, marginBottom:8, background: ok?'#f0fdf4':'#fef2f2', border:'1px solid '+(ok?'#bbf7d0':'#fecaca') }),
+};
+
+// ========== LANDING PAGE ==========
+function Landing({onStart}){
+  return <div style={C.page}>
+    <div style={C.card}>
+      <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:12}}>
+        <img src="https://davidsacademy.github.io/Davidsacademy-images/David-s-Driving-Academy-logo.png"
+          alt="David's Academy" style={C.logo}
+          onError={e=>{e.target.style.display='none'}}/>
+        <div>
+          <div style={C.h1}>G1 ਟੈਸਟ ਤਿਆਰੀ</div>
+          <div style={C.sub}>David's Academy of Defensive Driving</div>
+          <div style={{fontSize:12, color:'#94a3b8'}}>📞 647-657-7913 | info@davidsacademy.ca</div>
+        </div>
+      </div>
+      <div style={C.notice}>
+        <strong>⚠️ ਨੋਟਿਸ:</strong> ਇਹ ਅਭਿਆਸ ਟੈਸਟ ਸਿੱਖਿਆ ਦੇ ਉਦੇਸ਼ਾਂ ਲਈ ਹੈ। ਅਸਲ G1 ਟੈਸਟ ਤੋਂ ਪਹਿਲਾਂ ਓਂਟੇਰੀਓ ਡਰਾਈਵਰ ਹੈਂਡਬੁੱਕ ਪੜ੍ਹਨੀ ਜ਼ਰੂਰੀ ਹੈ।
+      </div>
+      <button style={{...C.mainBtn, background:'linear-gradient(135deg,#2563eb,#0ea5e9)', color:'white'}}
+        onClick={()=>onStart('all')}>
+        🎯 ਅਭਿਆਸ ਟੈਸਟ (ਸਾਰੇ)
+        <div style={{fontSize:12,fontWeight:500,opacity:.85}}>40 ਸਵਾਲ · 20 ਚਿੰਨ੍ਹ + 20 ਨਿਯਮ</div>
+      </button>
+      <div style={{fontWeight:700,fontSize:13,color:'#64748b',margin:'8px 0 6px'}}>— ਜਾਂ ਵਿਸ਼ੇ ਅਨੁਸਾਰ ਚੁਣੋ —</div>
+      {SETS.map(s=><button key={s.key} style={{...C.secBtn, background:'#f8fafc', color:'#1e40af', border:'1.5px solid #bfdbfe'}}
+        onClick={()=>onStart(s.key)}>
+        📋 {s.label}
+        <span style={{fontSize:12,fontWeight:500,color:'#64748b',marginLeft:8}}>{s.pool.length} ਸਵਾਲ</span>
+      </button>)}
+    </div>
+  </div>;
+}
+
+// ========== QUIZ SCREEN ==========
+function Quiz({questions, onDone, onBack}){
+  const [idx, setIdx] = React.useState(0);
+  const [chosen, setChosen] = React.useState(null);
+  const [answers, setAnswers] = React.useState([]);
+  const [done, setDone] = React.useState(false);
+  const total = questions.length;
+  const q = questions[idx];
+  const sec = useTimer(!done, ()=>{});
+  const mm = String(Math.floor(sec/60)).padStart(2,'0');
+  const ss = String(sec%60).padStart(2,'0');
+
+  function choose(i){
+    if(chosen!==null) return;
+    setChosen(i);
+    setAnswers(a=>[...a,{q, chosen:i, correct: i===q.ans}]);
+  }
+  function next(){
+    if(idx+1>=total){ setDone(true); return; }
+    setIdx(i=>i+1);
+    setChosen(null);
+  }
+
+  if(done) return <Results questions={questions} answers={answers} onBack={onBack}/>;
+
+  return <div style={C.page}>
+    <div style={C.card}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
+        <button onClick={onBack} style={{background:'none',border:'none',cursor:'pointer',fontSize:22,color:'#64748b'}}>←</button>
+        <span style={sec<60?C.timerWarn:C.timerOk}>⏱ {mm}:{ss}</span>
+        <span style={{fontSize:13,color:'#64748b'}}>{idx+1}/{total}</span>
+      </div>
+      <div style={C.prog}><div style={C.progFill(((idx+1)/total)*100)}/></div>
+      <div style={C.catBadge(q.cat)}>{q.cat}</div>
+      <SignDisplay sv={q.sv}/>
+      <div style={C.qText}>{q.q}</div>
+      {q.opts.map((opt,i)=>{
+        let st = null;
+        if(chosen!==null){
+          if(i===q.ans) st='correct';
+          else if(i===chosen) st='wrong';
+        }
+        return <button key={i} style={C.optBtn(st)} onClick={()=>choose(i)}>{opt}</button>;
+      })}
+      {chosen!==null && <>
+        <div style={C.exp}>💡 {q.exp}</div>
+        <button style={{...C.mainBtn,background:'#2563eb',color:'white',marginTop:12}} onClick={next}>
+          {idx+1>=total?'ਨਤੀਜੇ ਵੇਖੋ':'ਅਗਲਾ ਸਵਾਲ →'}
+        </button>
+      </>}
+    </div>
+  </div>;
+}
+
+// ========== RESULTS SCREEN ==========
+function Results({questions, answers, onBack}){
+  const [showReview, setShowReview] = React.useState(false);
+  const score = answers.filter(a=>a.correct).length;
+  const total = questions.length;
+  const pct = Math.round((score/total)*100);
+  const pass = pct>=80;
+
+  return <div style={C.page}>
+    <div style={C.card}>
+      <div style={pass?C.passBox:C.failBox}>
+        <div style={{fontSize:48}}>{pass?'🏆':'📚'}</div>
+        <div style={{fontSize:26,fontWeight:900,color:pass?'#166534':'#dc2626',margin:'6px 0'}}>
+          {pass?'ਪਾਸ!':'ਫੇਲ੍ਹ'}
+        </div>
+        <div style={{fontSize:32,fontWeight:900,color:'#1e293b'}}>{score}/{total}</div>
+        <div style={{fontSize:18,color:'#64748b'}}>{pct}%</div>
+        <div style={{fontSize:13,color:'#64748b',marginTop:4}}>
+          {pass?'ਬਹੁਤ ਵਧੀਆ! G1 ਪਾਸ ਕਰਨ ਲਈ 80% ਚਾਹੀਦਾ ਹੈ।':'ਅਭਿਆਸ ਕਰਦੇ ਰਹੋ। ਪਾਸ ਹੋਣ ਲਈ 80% ਚਾਹੀਦਾ ਹੈ।'}
+        </div>
+      </div>
+      <button style={{...C.mainBtn,background:'#2563eb',color:'white'}} onClick={onBack}>🏠 ਮੁੱਖ ਪੰਨੇ ਤੇ ਜਾਓ</button>
+      <button style={{...C.secBtn,background:'#f8fafc',color:'#1e293b',border:'1.5px solid #e2e8f0'}}
+        onClick={()=>setShowReview(r=>!r)}>
+        {showReview?'ਸਮੀਖਿਆ ਬੰਦ ਕਰੋ ▲':'ਸਵਾਲਾਂ ਦੀ ਸਮੀਖਿਆ ▼'}
+      </button>
+      {showReview && answers.map((a,i)=><div key={i} style={C.reviewItem(a.correct)}>
+        <div style={{fontSize:12,fontWeight:700,color:a.correct?'#16a34a':'#dc2626',marginBottom:4}}>
+          {a.correct?'✅ ਸਹੀ':'❌ ਗਲਤ'} · ਸ. {i+1}
+        </div>
+        <SignDisplay sv={a.q.sv}/>
+        <div style={{fontSize:13,fontWeight:600,color:'#1e293b',marginBottom:4}}>{a.q.q}</div>
+        <div style={{fontSize:12,color:'#16a34a',marginBottom:2}}>✓ {a.q.opts[a.q.ans]}</div>
+        {!a.correct&&<div style={{fontSize:12,color:'#dc2626',marginBottom:2}}>✗ {a.q.opts[a.chosen]}</div>}
+        <div style={{fontSize:12,color:'#0c4a6e',marginTop:4}}>💡 {a.q.exp}</div>
+      </div>)}
+    </div>
+  </div>;
+}
+
+// ========== APP ==========
+function App(){
+  const [mode, setMode] = React.useState(null);
+  const [questions, setQuestions] = React.useState([]);
+
+  function start(key){
+    let pool;
+    if(key==='all'){
+      pool = [...pick(ALL_SIGNS,20), ...pick(ALL_RULES,20)];
+      pool = shuffle(pool);
+    } else {
+      const set = SETS.find(s=>s.key===key);
+      pool = shuffle(set.pool);
+    }
+    setQuestions(pool);
+    setMode(key);
+  }
+
+  if(!mode) return <Landing onStart={start}/>;
+  return <Quiz questions={questions} onDone={()=>setMode(null)} onBack={()=>setMode(null)}/>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
